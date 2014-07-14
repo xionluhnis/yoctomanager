@@ -1,6 +1,6 @@
 YoctoPhoto
 ==========
-Media manager for [http://picocms.org/](Pico CMS) based on [https://github.com/gilbitron/Pico-Editor-Plugin](Pico-Editor-Plugin).
+Media manager for [PicoCMS](http://picocms.org/) based on [Pico-Editor-Plugin](https://github.com/gilbitron/Pico-Editor-Plugin).
 
 How to use
 ----------
@@ -11,11 +11,11 @@ Configure the rest as you need (especially media location).
 
 TODO
 ----
-  * Use [https://github.com/blueimp/jQuery-File-Upload](Jquery File Uploader) to implement the media manager
+  * Use [JQuery File Uploader](https://github.com/blueimp/jQuery-File-Upload) to implement the media manager
   * Provide data for twig templates to go over available media for a given namespace
   * Have default media gallery template
   * Possibly have thumbnail generation with GD
 
 License
 -------
-Released under the [http://www.opensource.org/licenses/MIT](MIT license).
+Released under the [MIT license](http://www.opensource.org/licenses/MIT).
