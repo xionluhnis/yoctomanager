@@ -44,13 +44,24 @@ class Pico_Editor {
 
   /**
    * Return whether $needle begins the string $haystack
-   *
-   * @param $haystack string the large string to look into
-   * @param $needle string the small string to find in the larger one
-   * @return whether $needle begins $haystack
+   * @see http://stackoverflow.com/questions/834303/startswith-and-endswith-functions-in-php
    */
   private static function startsWith($haystack, $needle) {
-    return $needle === '' || strpos($haystack, $needle) === 0;
+    $length = strlen($needle);
+    return substr($haystack, 0, $length) === $needle;
+  }
+
+  /**
+   * Return whether $needle ends the string $haystack
+   *
+   * @see http://stackoverflow.com/questions/834303/startswith-and-endswith-functions-in-php
+   */
+  private static function endsWith($haystack, $needle) {
+    $length = strlen($needle);
+    if($length == 0) {
+      return TRUE;
+    }
+    return substr($haystack, -$length) === $needle;
   }
 
   /**
@@ -142,7 +153,7 @@ class Pico_Editor {
     $base_path = rtrim($base_components['path'], '/');
 
     if(empty($file_path) || $file_path === $base_path) {
-      return 'index';
+      return '/index';
     } else {
       $file_path = strip_tags(substr($file_path, strlen($base_path)));
       if(is_dir(CONTENT_DIR . $file_path))
@@ -186,6 +197,12 @@ class Pico_Editor {
     }
   }
 
+  /**
+   * Return the media directory corresponding to a page
+   *
+   * @param $file_url string a page url
+   * @return the corresponding media directory
+   */
   private function get_media_dir(&$file_url) {
     // must be logged in
     $this->check_login();
@@ -196,7 +213,10 @@ class Pico_Editor {
     if(!$file) die('Error: Invalid file');
 
     // get media directory
-    $media_dir = CONTENT_DIR . dirname($file) . '.media/';
+    // echo "File=$file\n";
+    $media_dir = $this->setting('media_dir') . dirname($file) . $this->setting('media_sub', '');
+    if(!self::endsWith($media_dir, '/')) $media_dir .= '/';
+    // echo "MDir=$media_dir\n";
     return $media_dir;
   }
 
@@ -300,14 +320,19 @@ class Pico_Editor {
   private function do_media_list() {
     $media_dir = $this->get_media_dir($file_url);
     $media_list = array();
-    if(is_dir($media_dir)){
-      $media_list = array_filter(scandir($media_dir), function($file){
-        return !is_dir($file);
-      });
+    if(is_dir($media_dir) && $handle = opendir($media_dir)){
+      while( ($entry = readdir($handle)) !== FALSE) {
+        if(!is_dir($entry)){
+          $media_list[] = $entry;
+        }
+      }
+      natsort($media_list);
+      closedir($handle);
     }
     die(json_encode(array(
-      'list' => $media_list,
-      'file' => $file_url,
+      'list'  => $media_list,
+      'dir'   => $media_dir,
+      'file'  => $file_url,
       'error' => ''
     )));
   }

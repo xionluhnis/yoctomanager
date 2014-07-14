@@ -20,6 +20,7 @@
         <!--<li><a href="#" data-url="{{ page.url }}" class="post"><span data-icon="3" aria-hidden="true"></span>{% if page.title %}{{ page.title }}{% else %}Untitled{% endif %}</a>-->
         <li><a href="#" data-url="{{ page.url }}" class="post"><span data-icon="3" aria-hidden="true"></span>{{ page.url }}</a>
         <a href="{{ page.url }}" target="_blank" class="view" title="View">5</a>
+        <a href="#" data-url="{{ page.url }}" class="media" title="Media Manager">8</a>
         <a href="#" data-url="{{ page.url }}" class="delete" title="Delete">4</a></li>
         {% endfor %}
       </ul>
@@ -27,6 +28,7 @@
 
     <div id="main">
       <div id="epiceditor"></div>
+      <div id="mediamanager"></div>
 
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
       <script src="{{ base_url }}/plugins/yoctophoto/epiceditor/js/epiceditor.min.js"></script>
@@ -136,6 +138,23 @@
               document.title = document.title.replace(' *', '');
             });
           });
+
+          // Open media
+          $('.nav').on('click', '.media', function(e){
+            e.preventDefault();
+            if(unsaved && !confirm('You have unsaved changes. Are you sure you want to leave this post?')) return false;
+            $('.nav .post').removeClass('open');
+            $(this).parent().find('.post').addClass('open');
+
+            var fileUrl = $(this).attr('data-url');
+            $.post('admin/media/list', { file: fileUrl }, function(data){
+              $('#epiceditor').data('currentFile', fileUrl);
+              editor.importFile('epiceditor', data);
+              unsaved = false;
+              document.title = document.title.replace(' *', '');
+            });
+          });
+
 
           // Window resize
           $('body,#main,#epiceditor').height($(window).height());
