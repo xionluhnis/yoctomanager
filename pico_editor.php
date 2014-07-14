@@ -43,6 +43,17 @@ class Pico_Editor {
   }
 
   /**
+   * Return whether $needle begins the string $haystack
+   *
+   * @param $haystack string the large string to look into
+   * @param $needle string the small string to find in the larger one
+   * @return whether $needle begins $haystack
+   */
+  private static function startsWith($haystack, $needle) {
+    return $needle === '' || strpos($haystack, $needle) === 0;
+  }
+
+  /**
    * Hook: request mapping into actions
    * No twig rendering is made here.
    *
@@ -50,12 +61,28 @@ class Pico_Editor {
    */
   public function request_url(&$url) {
     // Are we looking for /admin?
-    if($url == 'admin') $this->is_admin = true;
-    if($url == 'admin/new') $this->do_new();
-    if($url == 'admin/open') $this->do_open();
-    if($url == 'admin/save') $this->do_save();
-    if($url == 'admin/delete') $this->do_delete();
-    if($url == 'admin/logout') $this->is_logout = true;
+    if(self::startsWith($url, 'admin')){
+      $this->is_admin = true;
+
+      // is it a command?
+      if(substr_compare($url, '/', 5, 1) === 0){
+        $cmd = substr($url, 6);
+        switch($cmd){
+          // basic editor
+        case 'new':     $this->do_new(); break;
+        case 'open':    $this->do_open(); break;
+        case 'save':    $this->do_save(); break;
+        case 'delete':  $this->do_delete(); break;
+        case 'logout':  $this->is_logout = true; break;
+          // media editor
+        case 'media/new':     $this->do_media_new(); break;
+        case 'media/list':    $this->do_media_list(); break;
+        case 'media/delete':  $this->do_media_delete(); break;
+        default:
+          die(json_encode(array('error' => 'Error: Wrong request')));
+        }
+      }
+    }
   }
 
   /**
@@ -159,6 +186,20 @@ class Pico_Editor {
     }
   }
 
+  private function get_media_dir(&$file_url) {
+    // must be logged in
+    $this->check_login();
+
+    // get file path
+    $file_url = isset($_POST['file']) && $_POST['file'] ? $_POST['file'] : '';
+    $file = self::get_real_filename($file_url);
+    if(!$file) die('Error: Invalid file');
+
+    // get media directory
+    $media_dir = CONTENT_DIR . dirname($file) . '.media/';
+    return $media_dir;
+  }
+
   //
   // Create a new page ////////////////////////////////////////////////////////
   //
@@ -251,6 +292,52 @@ class Pico_Editor {
 
     $file .= CONTENT_EXT;
     if(file_exists(CONTENT_DIR . $file)) die(unlink(CONTENT_DIR . $file));
+  }
+
+  //
+  // Retrieve the list of media file //////////////////////////////////////////
+  //
+  private function do_media_list() {
+    $media_dir = $this->get_media_dir($file_url);
+    $media_list = array();
+    if(is_dir($media_dir)){
+      $media_list = array_filter(scandir($media_dir), function($file){
+        return !is_dir($file);
+      });
+    }
+    die(json_encode(array(
+      'list' => $media_list,
+      'file' => $file_url,
+      'error' => ''
+    )));
+  }
+
+  //
+  // Upload new media files ///////////////////////////////////////////////////
+  //
+  private function do_media_new() {
+    $media_dir = $this->get_media_dir($file_url);
+
+    // 1 = create media directory if needed
+    
+    // 2 = upload files
+    
+    // 3 = send result
+
+  }
+
+  //
+  // Delete a media file //////////////////////////////////////////////////////
+  //
+  private function do_media_delete() {
+    if(empty($_POST['media'])) die('Error: Missing media');
+    $media_name = $_POST['media'];
+    $media_dir = $this->get_media_dir($file_url);
+    $media_file = $media_dir . $media_name;
+
+    if(file_exists($media_file)){
+      die(unlink($media_file));
+    }
   }
 
 }
