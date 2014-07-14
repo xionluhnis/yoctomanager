@@ -1,0 +1,8 @@
+# Deny access to dot-files (notably .passwd)
+<Files ~ "^\..+">
+Order allow,deny
+Deny from all
+</Files>
+
+# Prevent file browsing
+Options -Indexes
