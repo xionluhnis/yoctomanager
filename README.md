@@ -15,6 +15,7 @@ TODO
   * Provide data for twig templates to go over available media for a given namespace
   * Have default media gallery template
   * Possibly have thumbnail generation with GD
+  * Have slider to change left panel width
 
 License
 -------
