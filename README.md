@@ -6,12 +6,15 @@ How to use
 ----------
   1. Clone plugin or unzip archive (as `yoctophoto`) in your plugins directory.
   2. Generate your hash into `.passwd` or replace the call to `file_get_contents` by your hash string in `config.php`.
-  3. Visit [](http://www.yoursite.com/admin) and login
+  3. Visit <http://www.yoursite.com/admin> and login
 
 The file `config.php` contains different extra configuration.
 
 To generate a hash of `yourpassword` with `sha128` with php in command-line:
-  php -r 'echo hash("sha128", "yourpassword");'
+
+```bash
+php -r 'echo hash("sha128", "yourpassword");'
+```
 
 TODO
 ----
