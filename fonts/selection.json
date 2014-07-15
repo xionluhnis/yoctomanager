@@ -11,7 +11,7 @@
 			},
 			"properties": {
 				"id": 0,
-				"order": 25,
+				"order": 14,
 				"prevSize": 32,
 				"code": 49,
 				"name": "uni31",
@@ -30,7 +30,7 @@
 			},
 			"properties": {
 				"id": 1,
-				"order": 26,
+				"order": 15,
 				"prevSize": 32,
 				"code": 50,
 				"name": "uni32",
@@ -49,7 +49,7 @@
 			},
 			"properties": {
 				"id": 2,
-				"order": 27,
+				"order": 16,
 				"prevSize": 32,
 				"code": 51,
 				"name": "uni33",
@@ -68,7 +68,7 @@
 			},
 			"properties": {
 				"id": 3,
-				"order": 28,
+				"order": 17,
 				"prevSize": 32,
 				"code": 52,
 				"name": "uni34",
@@ -87,7 +87,7 @@
 			},
 			"properties": {
 				"id": 4,
-				"order": 29,
+				"order": 18,
 				"prevSize": 32,
 				"code": 53,
 				"name": "uni35",
@@ -95,6 +95,31 @@
 			},
 			"setIdx": 0,
 			"iconIdx": 4
+		},
+		{
+			"icon": {
+				"paths": [
+					"M864 0c88.364 0 160 71.634 160 160 0 36.020-11.91 69.258-32 96l-64 64-224-224 64-64c26.742-20.090 59.978-32 96-32zM64 736l-64 288 288-64 592-592-224-224-592 592zM715.578 363.578l-448 448-55.156-55.156 448-448 55.156 55.156z"
+				],
+				"tags": [
+					"pencil",
+					"write",
+					"edit",
+					"blog",
+					"note"
+				],
+				"grid": 16
+			},
+			"properties": {
+				"id": 5,
+				"order": 20,
+				"prevSize": 32,
+				"code": 84,
+				"name": "pencil",
+				"ligatures": ""
+			},
+			"setIdx": 1,
+			"iconIdx": 5
 		},
 		{
 			"icon": {
@@ -111,7 +136,7 @@
 			},
 			"properties": {
 				"id": 13,
-				"order": 24,
+				"order": 13,
 				"prevSize": 32,
 				"code": 55,
 				"name": "image",
@@ -135,7 +160,7 @@
 			},
 			"properties": {
 				"id": 14,
-				"order": 8,
+				"order": 1,
 				"prevSize": 32,
 				"code": 56,
 				"name": "images",
@@ -162,7 +187,7 @@
 			},
 			"properties": {
 				"id": 36,
-				"order": 23,
+				"order": 12,
 				"prevSize": 32,
 				"code": 70,
 				"name": "file",
@@ -186,7 +211,7 @@
 			},
 			"properties": {
 				"id": 94,
-				"order": 10,
+				"order": 2,
 				"prevSize": 32,
 				"code": 68,
 				"name": "download",
@@ -209,7 +234,7 @@
 			},
 			"properties": {
 				"id": 95,
-				"order": 11,
+				"order": 3,
 				"prevSize": 32,
 				"code": 85,
 				"name": "upload",
@@ -231,7 +256,7 @@
 			},
 			"properties": {
 				"id": 118,
-				"order": 30,
+				"order": 19,
 				"prevSize": 32,
 				"code": 81,
 				"name": "quotes-left",
@@ -255,7 +280,7 @@
 			},
 			"properties": {
 				"id": 130,
-				"order": 12,
+				"order": 4,
 				"prevSize": 32,
 				"code": 69,
 				"name": "expand",
@@ -282,7 +307,7 @@
 			},
 			"properties": {
 				"id": 142,
-				"order": 13,
+				"order": 5,
 				"prevSize": 32,
 				"code": 120,
 				"name": "cog",
@@ -308,7 +333,7 @@
 			},
 			"properties": {
 				"id": 143,
-				"order": 14,
+				"order": 6,
 				"prevSize": 32,
 				"code": 121,
 				"name": "cogs",
@@ -335,7 +360,7 @@
 			},
 			"properties": {
 				"id": 144,
-				"order": 15,
+				"order": 7,
 				"prevSize": 32,
 				"code": 122,
 				"name": "cog2",
@@ -358,7 +383,7 @@
 			},
 			"properties": {
 				"id": 191,
-				"order": 18,
+				"order": 10,
 				"prevSize": 32,
 				"code": 100,
 				"name": "download2",
@@ -380,7 +405,7 @@
 			},
 			"properties": {
 				"id": 192,
-				"order": 17,
+				"order": 9,
 				"prevSize": 32,
 				"code": 117,
 				"name": "upload2",
@@ -406,7 +431,7 @@
 			},
 			"properties": {
 				"id": 194,
-				"order": 16,
+				"order": 8,
 				"prevSize": 32,
 				"code": 87,
 				"name": "earth",
@@ -434,7 +459,7 @@
 			},
 			"properties": {
 				"id": 199,
-				"order": 20,
+				"order": 11,
 				"prevSize": 32,
 				"code": 54,
 				"name": "eye-blocked",

@@ -1,12 +1,13 @@
 <?php
 
 /**
- * Editor plugin for Pico
+ * Editor plugin with Media manager for Pico
  *
- * @author Gilbert Pellegrom
- * @link http://pico.dev7studios.com
+ * @author Alexandre Kaspar
+ * @link https://github.com/xionluhnis/yoctophoto
  * @license http://opensource.org/licenses/MIT
- * @version 1.1
+ * @version 0.1
+ * @see https://github.com/gilbitron/Pico-Editor-Plugin
  */
 class Pico_Editor {
 
@@ -88,6 +89,7 @@ class Pico_Editor {
           // media editor
         case 'media/new':     $this->do_media_new(); break;
         case 'media/list':    $this->do_media_list(); break;
+        case 'media/rename':  $this->do_media_rename(); break;
         case 'media/delete':  $this->do_media_delete(); break;
         default:
           die(json_encode(array('error' => 'Error: Wrong request')));
@@ -218,6 +220,29 @@ class Pico_Editor {
     if(!self::endsWith($media_dir, '/')) $media_dir .= '/';
     // echo "MDir=$media_dir\n";
     return $media_dir;
+  }
+
+  /**
+   * Return the image versions from the configuration
+   *
+   * @param $only_names bool whether to return only the image version names
+   */
+  private function get_image_versions($only_names = FALSE) {
+    $v = $this->setting('image_versions', array(
+      '' => array(
+        'auto_orient' => true
+      ),
+      'medium' => array(
+        'max_width' => 800,
+        'max_height' => 800
+      ),
+      'thumbnail' => array(
+        'max_width' => 80,
+        'max_height' => 80,
+        'crop' => true
+      )
+    ));
+    return $only_names ? array_keys($v) : $v;
   }
 
   //
@@ -357,20 +382,7 @@ class Pico_Editor {
       'accept_file_types' => $this->setting('accept_file_types', '/.+$/i'),
       'image_file_types'  => $this->setting('image_file_types', '/\.(gif|jpe?g|png)$/i'),
       'max_file_size'     => $this->setting('max_file_size', NULL),
-      'image_versions' => array(
-        '' => array(
-          'auto_orient' => true
-        ),
-        'medium' => array(
-          'max_width' => 800,
-          'max_height' => 800
-        ),
-        'thumbnail' => array(
-          'max_width' => 80,
-          'max_height' => 80,
-          'crop' => true
-        )
-      )
+      'image_versions'    => $this->get_image_versions()
     ));
 
     // done
@@ -378,16 +390,58 @@ class Pico_Editor {
   }
 
   //
+  // Rename a media file //////////////////////////////////////////////////////
+  //
+  private function do_media_rename() {
+    $media_dir = $this->get_media_dir();
+    if(empty($_POST['oldName'])) die('Error: Missing old name');
+    $old_name = $_POST['oldName'];
+    if(empty($_POST['newName'])) die('Error: Missing new name');
+    $new_name = $_POST['newName'];
+    if (strpos($new_name, '..') !== FALSE) die('Invalid new name, cannot use ..');
+
+    $old_file = $media_dir . $old_name;
+    $new_file = $media_dir . $new_name;
+
+    if(file_exists($old_file)){
+      if(file_exists($new_file)){
+        die('A file already exists with the new name!');
+      }
+      $versions = $this->get_image_versions(TRUE);
+      foreach($versions as $version){
+        $old_file = $media_dir . $version . '/' . $old_name;
+        if(file_exists($old_file)){
+          $new_file = $media_dir . $version . '/' . $new_name;
+          if(!rename($old_file, $new_file)) die('Could not rename ' . $old_file . ' into ' . $new_file);
+        }
+      }
+      die('Success');
+    }
+    die('File not found.');
+  }
+
+  //
   // Delete a media file //////////////////////////////////////////////////////
   //
   private function do_media_delete() {
-    if(empty($_POST['media'])) die('Error: Missing media');
-    $media_name = $_POST['media'];
-    $media_dir = $this->get_media_dir($file_url);
-    $media_file = $media_dir . $media_name;
+    $media_dir = $this->get_media_dir();
+    if(empty($_POST['name'])) die('Error: Missing file name');
+    $media_name = $_POST['name'];
 
-    if(file_exists($media_file)){
-      die(unlink($media_file));
+    // does the file exist?
+    if(!file_exists($media_dir . $media_name)) die('File not found!');
+
+    $versions = $this->get_image_versions(TRUE);
+    foreach($versions as $version){
+      if(strlen($version) == 0) continue; // keep it for the end!
+      $file = $media_dir . $version . '/' . $media_name;
+      if(file_exists($file)){
+        if(!unlink($file)) die('Could not delete ' . $file);
+      }
+    }
+    $file = $media_dir . $media_name;
+    if(file_exists($file)){
+      die(unlink($file) ? 'Success' : 'Could not delete ' . $file);
     }
   }
 

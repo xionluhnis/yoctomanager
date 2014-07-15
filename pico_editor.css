@@ -6,8 +6,8 @@
 /*=================================*/
 @font-face {
   font-family:'icomoon';
-  src:url('fonts/icomoon.eot?n34icq');
-  src:url('fonts/icomoon.eot?#iefixn34icq') format('embedded-opentype'), url('fonts/icomoon.woff?n34icq') format('woff'), url('fonts/icomoon.ttf?n34icq') format('truetype'), url('fonts/icomoon.svg?n34icq#icomoon') format('svg');
+  src:url('fonts/icomoon.eot?-axuxki');
+  src:url('fonts/icomoon.eot?#iefix-axuxki') format('embedded-opentype'), url('fonts/icomoon.woff?-axuxki') format('woff'), url('fonts/icomoon.ttf?-axuxki') format('truetype'), url('fonts/icomoon.svg?-axuxki#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -242,7 +242,7 @@ a:hover, a:active {
   height: 36px !important;
   font-size: 1.5em;
 }
-#medias ul span.file, #medias ul .view, #medias ul .delete {
+#medias ul span.file, #medias ul .view, #medias ul .rename, #medias ul .delete {
   font-family:'icomoon';
   width: 32px;
   height: 32px;
@@ -252,15 +252,18 @@ a:hover, a:active {
   margin: 0;
   line-height: 36px;
 }
-#medias ul .view, #medias ul .delete {
+#medias ul .view, #medias ul .rename, #medias ul .delete {
   position: absolute;
   top: 0px;
 }
 #medias ul .delete {
   right: 0px;
 }
-#medias ul .view {
+#medias ul .rename {
   right: 32px;
+}
+#medias ul .view {
+  right: 64px;
 }
 #medias #upload {
   margin-top: 42px;
