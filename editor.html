@@ -161,11 +161,11 @@
         $('.nav').on('click', '.media', function(e){
           e.preventDefault();
           currentPage = $(this).attr('data-url');
-          $('#medias').show();
+          $('#medias').fadeIn('slow');
         });
         $('#medias').click(function(event){
           if($(event.target).attr('id') == 'medias'){
-            $(this).hide();
+            $(this).fadeOut('slow');
           }
         });
 
@@ -175,12 +175,13 @@
           done: function(e, data) {
             // $.each(data.result.files, function(index, file) {
               // $('<li />').text(file.name).appendTo('#medias ul');
-            // });
+              // });
+            $('#medias .progress').fadeOut('slow');
           },
           progressall: function(e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#progress').css('display', 'block');
-            $('#progress .bar').css('width', progress + '%');
+            $('#medias .progress').fadeIn('slow');
+            $('#medias .progress .bar').css('width', progress + '%');
           }
         });
 

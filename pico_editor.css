@@ -180,19 +180,22 @@ a:hover, a:active {
   margin-bottom: 20px;
   border-bottom: 1px solid gray;
 }
-#medias #progress {
-  height: 22px;
-  margin: 10px;
+#medias .progress {
   display: none;
-  border: 1px solid gray;
+  height: 20px;
+  width: 100%;
+  border: 1px solid silver;
+  padding: 0px;
+  background: #eee;
 }
-#medias #progress .bar {
-  height: 22px;
+#medias .progress .bar {
+  height: 20px;
   width: 0%;
   left: 0px;
   margin: 0px;
   padding: 0px;
-  background: url(fileupload/css/progressbar.gif) repeat-x;
+  border: 0;
+  background: green url(fileupload/css/progressbar.gif) repeat-x;
 }
 #sidebar {
   position: absolute;
