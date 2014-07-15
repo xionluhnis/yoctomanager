@@ -11,12 +11,42 @@
     <div id="medias">
       <div class="page">
         <h2>Media</h2>
+        <script id="img-tpl" type="text/nano-template">
+          <li>
+            <a href="#" data-page="{page}" data-url="{{ base_url }}/{dir}{name}" class="link img" title="Insert link">
+              <img src="{{ base_url }}/{dir}{name}" />
+              <span>{name}</span>
+            </a>
+            <a href="#" data-page="{page}" data-url="{{ base_url }}/{dir}{name}" class="view" title="View image">5</a>
+            <a href="#" data-page="{page}" data-url="{{ base_url }}/{dir}{name}" class="delete" title="Delete">4</a>
+          </li>
+        </script>
+        <script id="file-tpl" type="text/nano-template">
+          <li>
+            <a href="#" data-page="{page}" data-url="{{ base_url }}/{dir}{name}" class="link file" title="Insert link">
+              <span class="file">F</span>
+              <span>{name}</span>
+            </a>
+            <a href="#" data-page="{page}" data-url="{{ base_url }}/{dir}{name}" class="view" title="Download">D</a>
+            <a href="#" data-page="{page}" data-url="{{ base_url }}/{dir}{name}" class="delete" title="Delete">4</a>
+            <div class="bar"></div>
+          </li>
+        </script>
+        <script id="load-tpl" type="text/nano-template">
+          <li class="loading" data-id="{id}">
+            <a href="#" class="link file" title="Uploading ...">
+              <span class="file">F</span>
+              <span>{name}</span>
+            </a>
+            <div class="bar"></div>
+          </li>
+        </script>
         <ul>
-          <!--
-          <li>File 1</li>
-          -->
+          <!-- The files go here -->
         </ul>
-        <input id="fileupload" type="file" name="medias[]" data-url="{{ base_url }}/admin/media/new" multiple></input>
+        <div id="upload">
+          <input id="fileupload" type="file" name="medias[]" data-url="{{ base_url }}/admin/media/new" multiple></input>
+        </div>
         <div class="progress">
           <div class="bar" style="width: 0%;"></div>
         </div>
@@ -47,6 +77,7 @@
     <script src="{{ base_url }}/plugins/yoctophoto/fileupload/js/vendor/jquery.ui.widget.js"></script>
     <script src="{{ base_url }}/plugins/yoctophoto/fileupload/js/jquery.iframe-transport.js"></script>
     <script src="{{ base_url }}/plugins/yoctophoto/fileupload/js/jquery.fileupload.js"></script>
+    <script src="{{ base_url }}/plugins/yoctophoto/nano/jquery.nano.js"></script>
 
     <!--
     <script src="{{ base_url }}/plugins/yoctophoto/jstree/jstree.min.js"></script>
@@ -155,13 +186,35 @@
           });
         });
 
-        //
-        var currentPage;
+        // Reloading the content
+        var reload = function(currentUrl){
+          if(!currentUrl) currentUrl = $('#medias').data('url');
+          // empty list
+          var $list = $('#medias ul');
+          $list.empty();
+          // get file list
+          $.post('{{ base_url }}/admin/media/list', { file: currentUrl },
+          function(data) {
+            $.each(data.list, function(index, file){
+              var json = {
+                name: file,
+                page: data.file,
+                dir: data.dir
+              };
+              var imgExt = /.+\.(png|jpe?g|gif)$/i;
+              var tmpl = imgExt.test(file) ? '#medias #img-tpl' : '#medias #file-tpl';
+              $res = $(tmpl).nanotmpl(json);
+              $res.appendTo($list);
+            });
+          }, 'json');
+        };
+
         // Open media
         $('.nav').on('click', '.media', function(e){
           e.preventDefault();
-          currentPage = $(this).attr('data-url');
-          $('#medias').fadeIn('slow');
+          var currentUrl = $(this).attr('data-url');
+          $('#medias').data('url', currentUrl).fadeIn('slow');
+          reload(currentUrl);
         });
         $('#medias').click(function(event){
           if($(event.target).attr('id') == 'medias'){
@@ -170,18 +223,55 @@
         });
 
         // Upload
+        var fileCount = 0;
+        var fileDone = 0;
         $('#fileupload').fileupload({
-          dataType: 'json',
-          done: function(e, data) {
-            // $.each(data.result.files, function(index, file) {
-              // $('<li />').text(file.name).appendTo('#medias ul');
-              // });
-            $('#medias .progress').fadeOut('slow');
-          },
-          progressall: function(e, data) {
-            var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#medias .progress').fadeIn('slow');
-            $('#medias .progress .bar').css('width', progress + '%');
+          dataType: 'json'
+        }).bind('fileuploadchange', function(e, data){ // FILE CHANGE ---------
+          // we update the file count
+          fileCount = data.files.length;
+
+        }).bind('fileuploadadd', function(e, data) { // QUEUE ADD -------------
+          // we add the "loading" item template
+          $('#medias #load-tpl').nanotmpl({
+            name: data.files[0].name,
+            id: data.files[0].name
+          }).appendTo($('#medias ul'));
+
+        }).bind('fileuploadsubmit', function(e, data) { // SUBMIT -------------
+          data.formData = {
+            file: $('#medias').data('url')
+          };
+
+        }).bind('fileuploadprogress', function(e, data) { // PROGRESS ---------
+          var progress = parseInt(data.loaded / data.total * 100, 10);
+          var id = data.files[0].name;
+          $('#medias li.loading').filter(function(){
+            return $(this).data('id') == id;
+          }).find('.bar').css('width', progress + '%');
+
+        }).bind('fileuploadprogressall', function(e, data) { // PROGRESSALL ---
+          var progress = parseInt(data.loaded / data.total * 100, 10);
+          $('#medias .progress').fadeIn('slow');
+          $('#medias .progress .bar').css('width', progress + '%');
+
+        }).bind('fileuploaddone', function(e, data) { // DONE -----------------
+          // TODO take care of failure cases
+          // (look at data.result or data.textStatus != 'success')
+          // increment done counter
+          ++fileDone;
+          if(fileDone >= fileCount) {
+            // hide if we're fully done, and reload everything
+            $('#medias .progress').fadeOut('slow', reload);
+          } else {
+            if(data.result && data.result.medias){
+              var file = data.result.medias[0];
+              if(file){
+                $('#medias li.loading').filter(function(){
+                  return $(this).data('id') == file.name;
+                }).removeClass('loading').find('.bar').remove();
+              }
+            }
           }
         });
 

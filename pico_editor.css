@@ -163,6 +163,7 @@ a:hover, a:active {
   overflow: auto;
   background: rgba(0, 0, 0, 0.7);
   cursor: pointer;
+  display: none;
 }
 #medias .page {
   margin: 100px auto;
@@ -179,6 +180,91 @@ a:hover, a:active {
   padding-bottom: 5px;
   margin-bottom: 20px;
   border-bottom: 1px solid gray;
+}
+#medias ul li {
+  list-style: none;
+  height: 36px;
+  line-height: 36px;
+  vertical-align: middle;
+  margin: 10px;
+  position: relative;
+}
+#medias ul li:nth-child(odd) {
+  background: #eee;
+}
+#medias ul li:nth-child(even) {
+  background: #def;
+}
+#medias ul li.loading {
+  background: #dfe;
+}
+#medias ul li .bar {
+  position: absolute;
+  height: 1px;
+  left: 0px;
+  bottom: 0px;
+  width: 0%;
+  background: #999;
+}
+#medias ul li a {
+  display: inline-block;
+}
+#medias ul li img {
+  width: 32px;
+  height: 32px;
+  line-height: 36px;
+  vertical-align: top;
+  margin-right: 20px;
+  margin-top: 2px;
+  opacity: 0.7;
+  -webkit-transition: all 0.2s linear;
+  -moz-transition: all 0.2s linear;
+  -ms-transition: all 0.2s linear;
+  -o-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+}
+#medias ul a:hover img {
+  opacity: 1.0;
+  -webkit-transition: all 0.2s linear;
+  -moz-transition: all 0.2s linear;
+  -ms-transition: all 0.2s linear;
+  -o-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+}
+#medias ul span {
+  line-height: 36px;
+  vertical-align: middle !important;
+}
+#medias ul span.file {
+  display: inline-block;
+  text-align: center;
+  margin-right: 20px !important;
+  height: 36px !important;
+  font-size: 1.5em;
+}
+#medias ul span.file, #medias ul .view, #medias ul .delete {
+  font-family:'icomoon';
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  line-height: 36px;
+}
+#medias ul .view, #medias ul .delete {
+  position: absolute;
+  top: 0px;
+}
+#medias ul .delete {
+  right: 0px;
+}
+#medias ul .view {
+  right: 32px;
+}
+#medias #upload {
+  margin-top: 42px;
+  text-align: center;
 }
 #medias .progress {
   display: none;

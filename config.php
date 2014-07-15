@@ -2,8 +2,6 @@
 
 global $editor_settings;
 
-
-
 /**
  * Set your configuration here
  */

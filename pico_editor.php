@@ -322,7 +322,7 @@ class Pico_Editor {
     $media_list = array();
     if(is_dir($media_dir) && $handle = opendir($media_dir)){
       while( ($entry = readdir($handle)) !== FALSE) {
-        if(!is_dir($entry)){
+        if(!is_dir($media_dir . $entry)){
           $media_list[] = $entry;
         }
       }
@@ -344,11 +344,37 @@ class Pico_Editor {
     $media_dir = $this->get_media_dir($file_url);
 
     // 1 = create media directory if needed
-    
+    if(!file_exists($media_dir)){
+      mkdir($media_dir, $this->setting('mkdir_mode', 0755), true);
+    }
     // 2 = upload files
-    
-    // 3 = send result
+    include_once($this->plugin_path .'/fileupload/php/UploadHandler.class.php');
+    $upload = new UploadHandler(array(
+      'upload_dir'        => $media_dir,
+      'upload_url'        => $_SESSION['pico_config']['base_url'] . '/' . $media_dir,
+      'mkdir_mode'        => $this->setting('mkdir_mode', 0755),
+      'param_name'        => 'medias',
+      'accept_file_types' => $this->setting('accept_file_types', '/.+$/i'),
+      'image_file_types'  => $this->setting('image_file_types', '/\.(gif|jpe?g|png)$/i'),
+      'max_file_size'     => $this->setting('max_file_size', NULL),
+      'image_versions' => array(
+        '' => array(
+          'auto_orient' => true
+        ),
+        'medium' => array(
+          'max_width' => 800,
+          'max_height' => 800
+        ),
+        'thumbnail' => array(
+          'max_width' => 80,
+          'max_height' => 80,
+          'crop' => true
+        )
+      )
+    ));
 
+    // done
+    exit;
   }
 
   //
