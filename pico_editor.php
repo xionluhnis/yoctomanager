@@ -143,6 +143,21 @@ class Pico_Editor {
 
       echo $twig_editor->render('editor.html', $twig_vars); // Render editor.html
       exit; // Don't continue to render template
+    } else {
+      // template rendering
+      // 1. Save media list
+      $media_dir = $this->get_media_dir($file_url, false);
+      $media_list = array();
+      if(is_dir($media_dir) && $handle = opendir($media_dir)){
+        while( ($entry = readdir($handle)) !== FALSE) {
+          if(!is_dir($media_dir . $entry)){
+            $media_list[] = $entry;
+          }
+        }
+        natsort($media_list);
+        closedir($handle);
+      }
+      $twig_vars['medias'] = $media_list;
     }
   }
 
@@ -209,9 +224,11 @@ class Pico_Editor {
    * @param $file_url string a page url
    * @return the corresponding media directory
    */
-  private function get_media_dir(&$file_url) {
-    // must be logged in
-    $this->check_login();
+  private function get_media_dir(&$file_url, $need_login = true) {
+    if($need_login){
+      // must be logged in
+      $this->check_login();
+    }
 
     // get file path
     $file_url = isset($_POST['file']) && $_POST['file'] ? $_POST['file'] : '';
