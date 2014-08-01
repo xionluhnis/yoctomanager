@@ -111,6 +111,10 @@ class Pico_Editor {
       exit;
     }
 
+    // special variables
+    $twig_vars['yocto_dir'] = basename($this->plugin_path);
+
+    // admin case
     if($this->is_admin){
       header($_SERVER['SERVER_PROTOCOL'].' 200 OK'); // Override 404 header
       $loader = new Twig_Loader_Filesystem($this->plugin_path);

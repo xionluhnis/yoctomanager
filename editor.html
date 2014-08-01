@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Pico Editor</title>
-    <link rel="stylesheet" href="{{ base_url }}/plugins/yoctophoto/pico_editor.css" type="text/css" />
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/pico_editor.css" type="text/css" />
     <meta name="robots" content="noindex, nofollow" />
   </head>
   <body>
@@ -74,14 +74,14 @@
     <div id="epiceditor"></div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-    <script src="{{ base_url }}/plugins/yoctophoto/epiceditor/js/epiceditor.min.js"></script>
-    <script src="{{ base_url }}/plugins/yoctophoto/fileupload/js/vendor/jquery.ui.widget.js"></script>
-    <script src="{{ base_url }}/plugins/yoctophoto/fileupload/js/jquery.iframe-transport.js"></script>
-    <script src="{{ base_url }}/plugins/yoctophoto/fileupload/js/jquery.fileupload.js"></script>
-    <script src="{{ base_url }}/plugins/yoctophoto/nano/jquery.nano.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/epiceditor/js/epiceditor.min.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/fileupload/js/vendor/jquery.ui.widget.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/fileupload/js/jquery.iframe-transport.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/fileupload/js/jquery.fileupload.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/nano/jquery.nano.js"></script>
 
     <!--
-    <script src="{{ base_url }}/plugins/yoctophoto/jstree/jstree.min.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/jstree/jstree.min.js"></script>
     -->
     <script>
       $(document).ready(function() {
@@ -89,7 +89,7 @@
         var unsaved = false;
         var editor = new EpicEditor({
           container: 'epiceditor',
-          basePath: '{{ base_url }}/plugins/yoctophoto/epiceditor',
+          basePath: '{{ base_url }}/plugins/{{ yocto_dir }}/epiceditor',
           clientSideStorage: false,
           file: {
             name: 'epiceditor',
