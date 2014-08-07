@@ -114,11 +114,18 @@ class Pico_Editor {
     // special variables
     $twig_vars['yocto_dir'] = basename($this->plugin_path);
 
+    // page filter
+    $base_url = $twig_vars['base_url'];
+    $shorturl = new Twig_SimpleFilter('shorturl', function ($string) use($base_url) {
+      return str_replace($base_url, '', $string);
+    });
+
     // admin case
     if($this->is_admin){
       header($_SERVER['SERVER_PROTOCOL'].' 200 OK'); // Override 404 header
       $loader = new Twig_Loader_Filesystem($this->plugin_path);
       $twig_editor = new Twig_Environment($loader, $twig_vars);
+      $twig_editor->addFilter($shorturl);
       if(!$this->setting('password')){
         $twig_vars['login_error'] = 'No password set for the Yocto Editor.';
         echo $twig_editor->render('login.html', $twig_vars); // Render login.html
@@ -144,6 +151,7 @@ class Pico_Editor {
       echo $twig_editor->render('editor.html', $twig_vars); // Render editor.html
       exit; // Don't continue to render template
     } else {
+      $twig->addFilter($shorturl);
       // template rendering
       // 1. Save media list
       $media_dir = $this->get_media_dir($file_url, false);
