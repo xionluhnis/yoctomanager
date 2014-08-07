@@ -297,10 +297,11 @@ class Pico_Editor {
     $error = '';
     $file .= CONTENT_EXT;
     $content = '/*
-      Title: '. $title .'
-      Author:
-      Date: '. date('Y/m/d') .'
-     */';
+Title: '. $title .'
+Author:
+Description:
+Date: '. date('Y/m/d') .'
+*/';
     if(file_exists($contentDir . $file)) {
       $error = 'Error: A post already exists with this title';
     } else {

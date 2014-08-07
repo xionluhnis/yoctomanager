@@ -94,7 +94,7 @@
           file: {
             name: 'epiceditor',
             defaultContent: '',
-            autoSave: 5000
+            autoSave: false // 5000
           },
           theme: {
             base: '/themes/base/epiceditor.css',
@@ -167,7 +167,8 @@
 
         // Save on preview
         editor.on('preview', function () {
-          editor.emit('autosave');
+          editor.save();
+          editor.emit('autosave'); // only time when we really save!
         });
 
         // Delete post
