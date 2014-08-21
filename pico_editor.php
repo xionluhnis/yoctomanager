@@ -154,15 +154,28 @@ class Pico_Editor {
       $twig->addFilter($shorturl);
       // template rendering
       // 1. Save media list
-      $media_dir = $this->get_media_dir($file_url, false);
+      $curr_url = $twig_vars['current_page']['url'];
+      $media_dir = $this->get_media_dir($file_url, false, $curr_url);
       $media_list = array();
+      $versions = self::get_image_versions(TRUE);
       if(is_dir($media_dir) && $handle = opendir($media_dir)){
         while( ($entry = readdir($handle)) !== FALSE) {
-          if(!is_dir($media_dir . $entry)){
-            $media_list[] = $entry;
+          $file = $media_dir . $entry;
+          if(!is_dir($file)){
+            $data = array(
+              'entry' => $entry,
+              'file' => $file,
+              'url' => $twig_vars['base_url'] . '/' . $file,
+            );
+            if(@is_array(getimagesize($file))){
+              $data = array_merge($data, self::get_image_info($file, $versions));
+            } else {
+              $data['is_image'] = FALSE;
+            }
+            $media_list[] = $data;
           }
         }
-        natsort($media_list);
+        // TODO natsort($media_list);
         closedir($handle);
       }
       $twig_vars['medias'] = $media_list;
@@ -180,7 +193,6 @@ class Pico_Editor {
     $base_components = parse_url($_SESSION['pico_config']['base_url']);
     $file_path = rtrim($file_components['path'], '/');
     $base_path = rtrim($base_components['path'], '/');
-
     if(empty($file_path) || $file_path === $base_path) {
       return '/index';
     } else {
@@ -232,14 +244,14 @@ class Pico_Editor {
    * @param $file_url string a page url
    * @return the corresponding media directory
    */
-  private function get_media_dir(&$file_url, $need_login = true) {
+  private function get_media_dir(&$file_url, $need_login = true, $default_url = '') {
     if($need_login){
       // must be logged in
       $this->check_login();
     }
 
     // get file path
-    $file_url = isset($_POST['file']) && $_POST['file'] ? $_POST['file'] : '';
+    $file_url = isset($_POST['file']) && $_POST['file'] ? $_POST['file'] : $default_url;
     $file = self::get_real_filename($file_url);
     if(!$file) die('Error: Invalid file');
 
@@ -272,6 +284,31 @@ class Pico_Editor {
       )
     ));
     return $only_names ? array_keys($v) : $v;
+  }
+
+  private function get_image_info($img_file, $versions = FALSE) {
+    if(!$versions) $versions = $this->get_image_versions(TRUE);
+    $base_dir = dirname($img_file);
+    $base_name = basename($img_file);
+    $base_url = $_SESSION['pico_config']['base_url'];
+    $data = array('is_image' => true);
+    foreach($versions as $v) {
+      if(!empty($v)) $v .= '/';
+      $file = $base_dir . '/' . $v . $base_name;
+      if(!is_file($file)) $file = $img_file;
+      list($width, $height) = getimagesize($file);
+      $idata = array(
+        'file' => $file,
+        'url' => $base_url . '/' . $file,
+        'width' => $width,
+        'height' => $height
+      );
+      if(!empty($v))
+        $data[$v] = $idata;
+      else
+        $data = array_merge($data, $idata);
+    }
+    return $data;
   }
 
   //
