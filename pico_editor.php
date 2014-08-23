@@ -15,6 +15,7 @@ class Pico_Editor {
   private $is_logout;
   private $plugin_path;
   private $settings;
+  private $base_url;
 
   public function __construct() {
     $this->is_admin = false;
@@ -29,6 +30,13 @@ class Pico_Editor {
       include_once($this->plugin_path .'/config.php');
       $this->settings = $editor_settings;
     }
+  }
+
+  /**
+   * Hook: base config has been loaded
+   */
+  public function config_loaded(&$settings) {
+    $this->base_url = $settings['base_url'];
   }
 
   /**
@@ -188,9 +196,9 @@ class Pico_Editor {
    * @param string $file_url the file URL to be edited
    * @return string
    */
-  private static function get_real_filename($file_url) {
+  private static function get_real_filename($file_url, $base_url) {
     $file_components = parse_url($file_url); // inner
-    $base_components = parse_url($_SESSION['pico_config']['base_url']);
+    $base_components = parse_url($base_url);
     $file_path = rtrim($file_components['path'], '/');
     $base_path = rtrim($base_components['path'], '/');
     if(empty($file_path) || $file_path === $base_path) {
@@ -252,7 +260,7 @@ class Pico_Editor {
 
     // get file path
     $file_url = isset($_POST['file']) && $_POST['file'] ? $_POST['file'] : $default_url;
-    $file = self::get_real_filename($file_url);
+    $file = self::get_real_filename($file_url, $this->base_url);
     if(!$file) die('Error: Invalid file');
 
     // get media directory
@@ -290,11 +298,11 @@ class Pico_Editor {
     if(!$versions) $versions = $this->get_image_versions(TRUE);
     $base_dir = dirname($img_file);
     $base_name = basename($img_file);
-    $base_url = $_SESSION['pico_config']['base_url'];
+    $base_url = $this->base_url;
     $data = array('is_image' => true);
     foreach($versions as $v) {
-      if(!empty($v)) $v .= '/';
-      $file = $base_dir . '/' . $v . $base_name;
+      $v_prefix = empty($v) ? '' : $v . '/';
+      $file = $base_dir . '/' . $v_prefix . $base_name;
       if(!is_file($file)) $file = $img_file;
       list($width, $height) = getimagesize($file);
       $idata = array(
@@ -362,7 +370,7 @@ Date: '. date('Y/m/d') .'
   private function do_open() {
     $this->check_login();
     $file_url = isset($_POST['file']) && $_POST['file'] ? $_POST['file'] : '';
-    $file = self::get_real_filename($file_url);
+    $file = self::get_real_filename($file_url, $this->base_url);
     if(!$file) die('Error: Invalid file');
 
     $file .= CONTENT_EXT;
@@ -376,7 +384,7 @@ Date: '. date('Y/m/d') .'
   private function do_save() {
     $this->check_login();
     $file_url = isset($_POST['file']) && $_POST['file'] ? $_POST['file'] : '';
-    $file = self::get_real_filename($file_url);
+    $file = self::get_real_filename($file_url, $this->base_url);
     if(!$file) die('Error: Invalid file');
     $content = isset($_POST['content']) && $_POST['content'] ? $_POST['content'] : '';
     if(!$content) die('Error: Invalid content');
@@ -399,7 +407,7 @@ Date: '. date('Y/m/d') .'
   private function do_delete() {
     $this->check_login();
     $file_url = isset($_POST['file']) && $_POST['file'] ? $_POST['file'] : '';
-    $file = self::get_real_filename($file_url);
+    $file = self::get_real_filename($file_url, $this->base_url);
     if(!$file) die('Error: Invalid file');
 
     $file .= CONTENT_EXT;
