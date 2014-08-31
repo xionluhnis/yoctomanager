@@ -94,7 +94,11 @@ class Pico_Editor {
         case 'save':    $this->do_save(); break;
         case 'delete':  $this->do_delete(); break;
         case 'logout':  $this->is_logout = true; break;
-          // media editor
+        // tree editor
+        case 'tree/new':    $this->do_tree_new(); break;
+        case 'tree/list':   $this->do_tree_list(); break;
+        case 'tree/delete': $this->do_tree_delete(); break;
+        // media editor
         case 'media/new':     $this->do_media_new(); break;
         case 'media/list':    $this->do_media_list(); break;
         case 'media/rename':  $this->do_media_rename(); break;
@@ -276,7 +280,7 @@ class Pico_Editor {
    *
    * @param $only_names bool whether to return only the image version names
    */
-  private function get_image_versions($only_names = FALSE) {
+  private function get_image_versions($only_names = FALSE, $non_default = FALSE) {
     $v = $this->setting('image_versions', array(
       '' => array(
         'auto_orient' => true
@@ -291,6 +295,9 @@ class Pico_Editor {
         'crop' => true
       )
     ));
+    if($non_default){
+      unset($v['']);
+    }
     return $only_names ? array_keys($v) : $v;
   }
 
@@ -342,11 +349,11 @@ class Pico_Editor {
     $error = '';
     $file .= CONTENT_EXT;
     $content = '/*
-Title: '. $title .'
-Author:
-Description:
-Date: '. date('Y/m/d') .'
-*/';
+      Title: '. $title .'
+      Author:
+      Description:
+      Date: '. date('Y/m/d') .'
+     */';
     if(file_exists($contentDir . $file)) {
       $error = 'Error: A post already exists with this title';
     } else {
@@ -518,6 +525,85 @@ Date: '. date('Y/m/d') .'
     if(file_exists($file)){
       die(unlink($file) ? 'Success' : 'Could not delete ' . $file);
     }
+  }
+
+  //
+  // Create a tree path ///////////////////////////////////////////////////////
+  //
+  private function do_tree_new() {
+  }
+
+  //
+  // List all tree paths //////////////////////////////////////////////////////
+  //
+  private function do_tree_list() {
+    // paths from content directory
+    $paths = array('');
+    $iter = new RecursiveIteratorIterator(
+      new RecursiveDirectoryIterator(CONTENT_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
+      RecursiveIteratorIterator::SELF_FIRST,
+      RecursiveIteratorIterator::CATCH_GET_CHILD // Ignore "Permission denied"
+    );
+    $prefix_length = strlen(CONTENT_DIR);
+    foreach ($iter as $path => $dir) {
+      if ($dir->isDir()) {
+        $paths[] = substr($path, $prefix_length);
+      }
+    }
+
+    // paths from media directory
+    $media_dir = $this->setting('media_dir');
+    $iter = new RecursiveIteratorIterator(
+      new RecursiveDirectoryIterator($media_dir, RecursiveDirectoryIterator::SKIP_DOTS),
+      RecursiveIteratorIterator::SELF_FIRST,
+      RecursiveIteratorIterator::CATCH_GET_CHILD // Ignore "Permission denied"
+    );
+    $prefix_length = strlen($media_dir) + 1;
+    $versions = $this->get_image_versions(TRUE, TRUE);
+    foreach ($iter as $path => $dir) {
+      if (in_array($dir->getFilename(), $versions)) continue; // skip version directories
+      if ($dir->isDir()) {
+        $paths[] = substr($path, $prefix_length);
+      }
+    }
+
+    // only keep unique set
+    $paths = array_unique($paths);
+
+    // get information for each path
+    $list = array();
+    foreach ($paths as $p){
+      $content = 0;
+      $media = 0;
+      $files = array();
+      // over content
+      foreach(scandir(CONTENT_DIR . $p) as $fname){
+        $file = CONTENT_DIR . $p . '/' . $fname;
+        if(is_file($file) && self::endsWith($file, CONTENT_EXT))
+          ++$content;
+      }
+      // over content
+      foreach(scandir($media_dir . '/' . $p) as $fname){
+        $file = $media_dir . '/' . $p . '/' . $fname;
+        if(!is_dir($file))
+          ++$media;
+      }
+      $list[$p] = array(
+        'content' => $content,
+        'media' => $media
+      );
+    }
+
+    die(json_encode($list));
+  }
+  private function get_tree_info($path) {
+
+  }
+
+  //
+  // Delete a tree path ///////////////////////////////////////////////////////
+  //
+  private function do_tree_delete() {
   }
 
 }
