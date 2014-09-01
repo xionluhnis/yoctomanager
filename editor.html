@@ -166,6 +166,8 @@
         $('.controls .new').on('click', function(e){
           e.preventDefault();
           var linkName = prompt('Please enter page to create', '/');
+          if(!linkName) return false; // cancelled by user
+          // check that the link is correct
           if(linkName.charAt(0) != '/'){
             alert('Page should start with /');
             return false;
@@ -184,7 +186,7 @@
                 editor.importFile('epiceditor', data.content);
                 unsaved = false;
                 document.title = document.title.replace(' *', '');
-                $('.nav').prepend('<li><a href="#" data-url="{{ base_url }}/'+ data.file +'" class="post open"><span data-icon="3" aria-hidden="true"></span>/'+ data.file +'</a><a href="{{ base_url }}/'+ data.file +'" target="_blank" class="view" title="View">5</a><a href="#" data-url="{{ base_url }}/' + data.file + '" class="media" title="Media Manager">8</a><a href="#" data-url="{{ base_url }}/'+ data.file +'" class="delete" title="Delete">4</a></li>');
+                $('.nav').prepend('<li><a href="#" data-url="{{ base_url }}'+ data.file +'" class="post open"><span data-icon="3" aria-hidden="true"></span>'+ data.file +'</a><a href="{{ base_url }}'+ data.file +'" target="_blank" class="view" title="View">5</a><a href="#" data-url="{{ base_url }}' + data.file + '" class="media" title="Media Manager">8</a><a href="#" data-url="{{ base_url }}'+ data.file +'" class="delete" title="Delete">4</a></li>');
               }
             }, 'json');
           }
