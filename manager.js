@@ -111,7 +111,7 @@ function loadMedias(currentUrl){
   if(!currentUrl) currentUrl = $('#medias').data('url');
   console.log(currentUrl);
   // empty list
-  var $list = $('#medias ul');
+  var $list = $('#medias ul.list');
   $list.empty();
   // get file list
   $.post(base_url + '/admin/media/list', { file: currentUrl }, function(data) {
@@ -123,7 +123,7 @@ function loadMedias(currentUrl){
       };
       var imgExt = /.+\.(png|jpe?g|gif)$/i;
       var tmpl = imgExt.test(file) ? '#medias #img-tpl' : '#medias #file-tpl';
-      $res = $(tmpl).nanotmpl(json);
+      var $res = $(tmpl).nanotmpl(json);
       $res.find('a').click(mediaAction);
       $res.appendTo($list);
     });
@@ -148,15 +148,48 @@ function openMedias(e){
 ///////////////////////////////////////////////////////////////////////////////
 ///// Directory tree //////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+function treeAction(event){
 
+}
+function openTree(e){
+  var $list = $('#dirtree ul.tree');
+  $list.empty();
+  $('#dirtree').fadeIn('slow');
+  // get tree
+  $.post(base_url + '/admin/tree/list', {}, function(data){
+    var items = [];
+    for(var path in data){
+      var json = data[path];
+      json.path = path;
+      items.push(json);
+    }
+    items.sort(function(a, b){
+      return a.path.localeCompare(b.path);
+    });
+    for(var i = 0; i < items.length; ++i){
+      var $res = $('#dirtree #tree-tpl').nanotmpl(items[i]);
+      $res.find('a').click(treeAction);
+      $res.appendTo($list);
+    }
+  }, 'json');
+  return false;
+}
 
+///////////////////////////////////////////////////////////////////////////////
+///// Events //////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 $(function() {
+
+  // load the select-chosen filters ///////////////////////////////////////////
   $('.tree-filter').each(function(){
     // parameters depend on data
     $(this).chosen({ width: $(this).data('width') || '' });
   });
   $('#sidebar .tree-filter').change(applyFilter);
   updateFilter();
+
+
+  // setup the epic editor ////////////////////////////////////////////////////
   var unsaved = false;
   var editor = new EpicEditor({
     container: 'epiceditor',
@@ -178,7 +211,6 @@ $(function() {
     },
     focusOnLoad: true
   }).load();
-
   $(editor.getElement('editor')).on('keyup', function (){
     if(!unsaved){
       unsaved = true;
@@ -186,7 +218,8 @@ $(function() {
     }
   });
 
-  // New
+
+  // New page /////////////////////////////////////////////////////////////////
   $('.controls .new').on('click', function(e){
     e.preventDefault();
     var linkName = prompt('Please enter page to create', '/');
@@ -216,7 +249,8 @@ $(function() {
     }
   });
 
-  // Open post
+
+  // Open page ////////////////////////////////////////////////////////////////
   $('.nav').on('click', '.post', function(e){
     e.preventDefault();
     if(unsaved && !confirm('You have unsaved changes. Are you sure you want to leave this post?')) return false;
@@ -232,7 +266,8 @@ $(function() {
       });
     });
 
-  // Save post
+
+  // Save page ////////////////////////////////////////////////////////////////
   editor.on('autosave', function () {
     $('#saving').text('Saving...').addClass('active');
     $.post('admin/save', { file: $('#epiceditor').data('currentFile'), content: editor.exportFile() }, function(data){
@@ -244,14 +279,14 @@ $(function() {
       }, 1000);
     });
   });
-
   // Save on preview
   editor.on('preview', function () {
     editor.save();
     editor.emit('autosave'); // only time when we really save!
   });
 
-  // Delete post
+
+  // Delete page //////////////////////////////////////////////////////////////
   $('.nav').on('click', '.delete', function(e){
     e.preventDefault();
     if(!confirm('Are you sure you want to delete this file?')) return false;
@@ -268,11 +303,16 @@ $(function() {
     });
   });
 
-  $('#sidebar .controls .tree').click(function(){
-
+  // Open tree ////////////////////////////////////////////////////////////////
+  $('#sidebar .controls .tree').click(openTree);
+  $('#dirtree').click(function(event){
+    if($(event.target).attr('id') == 'dirtree'){
+      $(this).fadeOut('slow');
+    }
   });
 
-  // Open media
+
+  // Open medias //////////////////////////////////////////////////////////////
   $('.nav').on('click', '.media', openMedias);
   $('#sidebar .controls .media').click(openMedias);
   $('#medias').click(function(event){
@@ -281,7 +321,8 @@ $(function() {
     }
   });
 
-  // Upload
+
+  // Upload setup /////////////////////////////////////////////////////////////
   var fileCount = 0;
   var fileDone = 0;
   $('#fileupload').fileupload({
@@ -334,7 +375,8 @@ $(function() {
     }
   });
 
-  // Window resize
+
+  // Window resize ////////////////////////////////////////////////////////////
   $('body,#main,#epiceditor').height($(window).height());
   $(window).resize(function() {
     $('body,#main,#epiceditor').height($(window).height());

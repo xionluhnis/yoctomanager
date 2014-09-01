@@ -181,7 +181,7 @@ a:hover, a:active {
   margin-bottom: 20px;
   border-bottom: 1px solid gray;
 }
-#medias ul.list li {
+ul.filelist li {
   list-style: none;
   height: 36px;
   line-height: 36px;
@@ -189,16 +189,16 @@ a:hover, a:active {
   margin: 10px;
   position: relative;
 }
-#medias ul.list li:nth-child(odd) {
+ul.filelist li:nth-child(odd) {
   background: #eee;
 }
-#medias ul.list li:nth-child(even) {
+ul.filelist li:nth-child(even) {
   background: #def;
 }
-#medias ul.list li.loading {
+ul.filelist li.loading {
   background: #dfe;
 }
-#medias ul.list li .bar {
+ul.filelist li .bar {
   position: absolute;
   height: 1px;
   left: 0px;
@@ -206,10 +206,10 @@ a:hover, a:active {
   width: 0%;
   background: #999;
 }
-#medias ul.list li a {
+ul.filelist li a {
   display: inline-block;
 }
-#medias ul.list li img {
+ul.filelist li img {
   width: 32px;
   height: 32px;
   line-height: 36px;
@@ -223,7 +223,7 @@ a:hover, a:active {
   -o-transition: all 0.2s linear;
   transition: all 0.2s linear;
 }
-#medias ul.list a:hover img {
+ul.filelist a:hover img {
   opacity: 1.0;
   -webkit-transition: all 0.2s linear;
   -moz-transition: all 0.2s linear;
@@ -231,18 +231,18 @@ a:hover, a:active {
   -o-transition: all 0.2s linear;
   transition: all 0.2s linear;
 }
-#medias ul.list span {
+ul.filelist span {
   line-height: 36px;
   vertical-align: middle !important;
 }
-#medias ul.list span.file {
+ul.filelist span.file {
   display: inline-block;
   text-align: center;
   margin-right: 20px !important;
   height: 36px !important;
   font-size: 1.5em;
 }
-#medias ul.list span.file, #medias ul.list .view, #medias ul.list .rename, #medias ul.list .delete {
+ul.filelist span.file, ul.filelist .view, ul.filelist .rename, ul.filelist .delete {
   font-family:'icomoon';
   width: 32px;
   height: 32px;
@@ -252,17 +252,17 @@ a:hover, a:active {
   margin: 0;
   line-height: 36px;
 }
-#medias ul.list .view, #medias ul.list .rename, #medias ul.list .delete {
+ul.filelist .view, ul.filelist .rename, ul.filelist .delete {
   position: absolute;
   top: 0px;
 }
-#medias ul.list .delete {
+ul.filelist .delete {
   right: 0px;
 }
-#medias ul.list .rename {
+ul.filelist .rename {
   right: 32px;
 }
-#medias ul.list .view {
+ul.filelist .view {
   right: 64px;
 }
 #medias #upload {
@@ -285,6 +285,31 @@ a:hover, a:active {
   padding: 0px;
   border: 0;
   background: green url(fileupload/css/progressbar.gif) repeat-x;
+}
+#dirtree .tree li {
+  margin: 0 10px;
+  padding-left: 10px;
+  border-top: 1px solid white;
+}
+ul.filelist li:hover {
+  background: white;
+}
+#dirtree .tree li:first-child .delete {
+  display: none;
+}
+#dirtree .tree .link {
+  margin-right: 15px;
+}
+#dirtree .tree li > span {
+  color: silver;
+  padding-right: 5px;
+  position: absolute;
+}
+#dirtree .tree .pagecount {
+  right: 50px;
+}
+#dirtree .tree .mediacount {
+  right: 110px;
 }
 #sidebar {
   position: absolute;
