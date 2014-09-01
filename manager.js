@@ -5,6 +5,10 @@
  * Based on: pico-editor
  */
 
+// Global variables ///////////////////////////////////////////////////////////
+var editor = null;
+var unsaved = false;
+
 ///////////////////////////////////////////////////////////////////////////////
 ///// File filters ////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,7 +68,6 @@ function mediaAction(event){
   // the dom elements
   var $link = $(this);
   var p = $link.parent();
-  var editor = $('body').data('editor');
 
   if($link.hasClass('link')){
     // insert link in current document
@@ -252,8 +255,8 @@ $(function() {
 
 
   // setup the epic editor ////////////////////////////////////////////////////
-  var unsaved = false;
-  var editor = new EpicEditor({
+  unsaved = false;
+  editor = new EpicEditor({
     container: 'epiceditor',
     basePath: base_url + '/plugins/' + yocto_dir + '/epiceditor',
     clientSideStorage: false,
@@ -279,7 +282,6 @@ $(function() {
       document.title += ' *';
     }
   });
-  $('body').data('editor', editor);
 
   // New page /////////////////////////////////////////////////////////////////
   $('.controls .new').on('click', function(e){
