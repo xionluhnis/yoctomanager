@@ -4,12 +4,12 @@
  * Editor plugin with Media manager for Pico
  *
  * @author Alexandre Kaspar
- * @link https://github.com/xionluhnis/yoctophoto
+ * @link https://github.com/xionluhnis/yoctomanager
  * @license http://opensource.org/licenses/MIT
  * @version 0.1
  * @see https://github.com/gilbitron/Pico-Editor-Plugin
  */
-class Pico_Editor {
+class Yocto_Manager {
 
   private $is_admin;
   private $is_logout;

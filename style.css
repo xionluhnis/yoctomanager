@@ -153,7 +153,7 @@ a:hover, a:active {
   position: relative;
   top: 1px;
 }
-#medias {
+#dirtree, #medias {
   position: absolute;
   left: 0px;
   top: 0px;
@@ -165,7 +165,7 @@ a:hover, a:active {
   cursor: pointer;
   display: none;
 }
-#medias .page {
+#dirtree .page, #medias .page {
   margin: 100px auto;
   max-width: 700px;
   min-height: 500px;
@@ -173,7 +173,7 @@ a:hover, a:active {
   padding: 50px;
   cursor: default;
 }
-#medias h2 {
+#dirtree h2, #medias h2 {
   font-size: 2em;
   line-height: 2em;
   font-weight: bold;
