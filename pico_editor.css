@@ -181,7 +181,7 @@ a:hover, a:active {
   margin-bottom: 20px;
   border-bottom: 1px solid gray;
 }
-#medias ul li {
+#medias ul.list li {
   list-style: none;
   height: 36px;
   line-height: 36px;
@@ -189,16 +189,16 @@ a:hover, a:active {
   margin: 10px;
   position: relative;
 }
-#medias ul li:nth-child(odd) {
+#medias ul.list li:nth-child(odd) {
   background: #eee;
 }
-#medias ul li:nth-child(even) {
+#medias ul.list li:nth-child(even) {
   background: #def;
 }
-#medias ul li.loading {
+#medias ul.list li.loading {
   background: #dfe;
 }
-#medias ul li .bar {
+#medias ul.list li .bar {
   position: absolute;
   height: 1px;
   left: 0px;
@@ -206,10 +206,10 @@ a:hover, a:active {
   width: 0%;
   background: #999;
 }
-#medias ul li a {
+#medias ul.list li a {
   display: inline-block;
 }
-#medias ul li img {
+#medias ul.list li img {
   width: 32px;
   height: 32px;
   line-height: 36px;
@@ -223,7 +223,7 @@ a:hover, a:active {
   -o-transition: all 0.2s linear;
   transition: all 0.2s linear;
 }
-#medias ul a:hover img {
+#medias ul.list a:hover img {
   opacity: 1.0;
   -webkit-transition: all 0.2s linear;
   -moz-transition: all 0.2s linear;
@@ -231,18 +231,18 @@ a:hover, a:active {
   -o-transition: all 0.2s linear;
   transition: all 0.2s linear;
 }
-#medias ul span {
+#medias ul.list span {
   line-height: 36px;
   vertical-align: middle !important;
 }
-#medias ul span.file {
+#medias ul.list span.file {
   display: inline-block;
   text-align: center;
   margin-right: 20px !important;
   height: 36px !important;
   font-size: 1.5em;
 }
-#medias ul span.file, #medias ul .view, #medias ul .rename, #medias ul .delete {
+#medias ul.list span.file, #medias ul.list .view, #medias ul.list .rename, #medias ul.list .delete {
   font-family:'icomoon';
   width: 32px;
   height: 32px;
@@ -252,17 +252,17 @@ a:hover, a:active {
   margin: 0;
   line-height: 36px;
 }
-#medias ul .view, #medias ul .rename, #medias ul .delete {
+#medias ul.list .view, #medias ul.list .rename, #medias ul.list .delete {
   position: absolute;
   top: 0px;
 }
-#medias ul .delete {
+#medias ul.list .delete {
   right: 0px;
 }
-#medias ul .rename {
+#medias ul.list .rename {
   right: 32px;
 }
-#medias ul .view {
+#medias ul.list .view {
   right: 64px;
 }
 #medias #upload {
@@ -324,10 +324,15 @@ a:hover, a:active {
   width: 100%;
   margin: 38px 0 0 0;
 }
-#sidebar .chosen-container input {
+#medias .tree-filter, #medias .chosen-container {
+  width: 50%;
+  float: right;
+  margin-top: -5em;
+}
+.chosen-container input {
   box-sizing: content-box;
 }
-#sidebar .chosen-container a, #sidebar .chosen-container a:visited {
+.chosen-container a, #sidebar .chosen-container a:visited {
   -webkit-transition: none;
   -moz-transition: none;
   -ms-transition: none;
@@ -361,7 +366,7 @@ a:hover, a:active {
 #sidebar .nav li:hover a.post {
   padding-right: 55px;
 }
-#sidebar .nav li a.open {
+#sidebar .nav li.open a {
   color: #21272d;
 }
 #sidebar .nav li .view, #sidebar .nav li .media, #sidebar .nav li .delete {

@@ -12,6 +12,9 @@
     <div id="medias">
       <div class="page">
         <h2>Media</h2>
+        <select class="tree-filter" data-width="50%">
+          <option value="/">/</option>
+        </select>
         <script id="img-tpl" type="text/nano-template">
           <li data-page="{page}" data-name="{name}" data-url="{{ base_url }}/{dir}{name}">
             <a href="#" class="link img" title="Insert link">
@@ -43,7 +46,7 @@
             <div class="bar"></div>
           </li>
         </script>
-        <ul>
+        <ul class="list">
           <!-- The files go here -->
         </ul>
         <div id="upload">
@@ -62,11 +65,8 @@
       <a href="#" class="media btn" title="Medias">8</a>
       <a href="{{ base_url }}/admin/logout" class="logout btn" title="Logout">2</a>
     </div>
-    <select class="tree-filter" tabindex="-1" multiple="" data-placeholder="Filter pages...">
+    <select class="tree-filter" tabindex="-1" multiple="" data-placeholder="Filter pages..." data-isfilter="true" data-width="100%">
       <option value=""></option>
-      {% for dir in directories %}
-        
-      {% endfor %}
     </select>
     <ul class="nav">
       {% for page in pages %}
@@ -118,15 +118,20 @@
           $select.find('option').remove();
           // $select.append('<option value=""></option>');
           for(var dir in data){
-            if(dir.length) dir = '/' + dir;
-            $select.append('<option value="' + dir + '">' + dir + '</option>');
+            $select.each(function(){
+              var path = $(this).data('isfilter') ? (dir.length ? '/' + dir : dir) : '/' + dir;
+              $(this).append('<option value="' + path + '">' + path + '</option>');
+            });
           }
-          $select.chosen();
-          $select.change(applyFilter);
+          $select.trigger('chosen:updated');
         }, 'json');
       }
       $(document).ready(function() {
-          //$('.select-chosen').chosen();
+        $('.tree-filter').each(function(){
+          // parameters depend on data
+          $(this).chosen({ width: $(this).data('width') || '' });
+        });
+        $('#sidebar .tree-filter').change(applyFilter);
         updateFilter();
         var unsaved = false;
         var editor = new EpicEditor({
@@ -160,19 +165,26 @@
         // New
         $('.controls .new').on('click', function(e){
           e.preventDefault();
-          var dir = prompt('Please enter the dir(path without host and page/file name)', '/');
-          var title = prompt('Please enter a post title', '');
+          var linkName = prompt('Please enter page to create', '/');
+          if(linkName.charAt(0) != '/'){
+            alert('Page should start with /');
+            return false;
+          }
+          var splitIndex = linkName.lastIndexOf('/');
+          var dir = linkName.substring(0, splitIndex + 1);
+          var title = linkName.substring(splitIndex + 1);
+
           if(title != null && title != '' && dir != null && dir != ''){
             $.post('admin/new', { title: title, dir: dir }, function(data){
               if(data.error){
                 alert(data.error);
                 } else {
-                $('.nav .post').removeClass('open');
+                $('#sidebar .nav .open').removeClass('open');
                 $('#epiceditor').data('currentFile', data.file);
                 editor.importFile('epiceditor', data.content);
                 unsaved = false;
                 document.title = document.title.replace(' *', '');
-                $('.nav').prepend('<li><a href="#" data-url="{{ base_url }}/'+ data.file +'" class="post open"><span data-icon="3" aria-hidden="true"></span>/'+ data.title +'</a><a href="{{ base_url }}/'+ data.file +'" target="_blank" class="view" title="View">5</a><a href="#" data-url="{{ base_url }}/' + data.file + '" class="media" title="Media Manager">8</a><a href="#" data-url="{{ base_url }}/'+ data.file +'" class="delete" title="Delete">4</a></li>');
+                $('.nav').prepend('<li><a href="#" data-url="{{ base_url }}/'+ data.file +'" class="post open"><span data-icon="3" aria-hidden="true"></span>/'+ data.file +'</a><a href="{{ base_url }}/'+ data.file +'" target="_blank" class="view" title="View">5</a><a href="#" data-url="{{ base_url }}/' + data.file + '" class="media" title="Media Manager">8</a><a href="#" data-url="{{ base_url }}/'+ data.file +'" class="delete" title="Delete">4</a></li>');
               }
             }, 'json');
           }
@@ -182,8 +194,8 @@
         $('.nav').on('click', '.post', function(e){
           e.preventDefault();
           if(unsaved && !confirm('You have unsaved changes. Are you sure you want to leave this post?')) return false;
-          $('.nav .post').removeClass('open');
-          $(this).addClass('open');
+          $('#sidebar .nav .open').removeClass('open');
+          $(this).parent().addClass('open');
 
           var fileUrl = $(this).attr('data-url');
           $.post('admin/open', { file: fileUrl }, function(data){
@@ -294,6 +306,7 @@
         // Reloading the content
         var reload = function(currentUrl){
           if(!currentUrl) currentUrl = $('#medias').data('url');
+          console.log(currentUrl);
           // empty list
           var $list = $('#medias ul');
           $list.empty();
@@ -316,12 +329,22 @@
         };
 
         // Open media
-        $('.nav').on('click', '.media', function(e){
+        var openMedias = function(e){
           e.preventDefault();
-          var currentUrl = $(this).attr('data-url');
+          //var currentUrl = $(this).attr('data-url');
+          var dataUrl = $(this).data('url');
+          var currentUrl = dataUrl;
+          if(!dataUrl){
+            currentUrl = '{{ base_url }}/';
+            $('#sidebar .nav .open').each(function(){
+              currentUrl = '{{ base_url }}' + $(this).data('path');
+            });
+          }
           $('#medias').data('url', currentUrl).fadeIn('slow');
           reload(currentUrl);
-        });
+        };
+        $('.nav').on('click', '.media', openMedias);
+        $('#sidebar .controls .media').click(openMedias);
         $('#medias').click(function(event){
           if($(event.target).attr('id') == 'medias'){
             $(this).fadeOut('slow');
