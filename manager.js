@@ -64,6 +64,7 @@ function mediaAction(event){
   // the dom elements
   var $link = $(this);
   var p = $link.parent();
+  var editor = $('body').data('editor');
 
   if($link.hasClass('link')){
     // insert link in current document
@@ -118,12 +119,20 @@ function mediaAction(event){
   }
 }
 
-function loadMedias(currentUrl){
-  if(!currentUrl) currentUrl = $('#medias').data('url');
-  console.log(currentUrl);
+function loadMedias(currentUrl, path, updateTree){
+  if(!path){
+    path = currentUrl.replace(base_url, '');
+    if(path != '/') {
+      path = path.substring(0, path.lastIndexOf('/'));
+    }
+  }
+  if(arguments.length < 3) updateTree = true;
+  console.log('url: ' + currentUrl + ', path: ' + path + ', tree: ' + updateTree);
+
   // empty list
   var $list = $('#medias ul.list');
   $list.empty();
+
   // get file list
   $.post(base_url + '/admin/media/list', { file: currentUrl }, function(data) {
     $.each(data.list, function(index, file){
@@ -139,6 +148,13 @@ function loadMedias(currentUrl){
       $res.appendTo($list);
     });
   }, 'json');
+
+  // select path
+  if(updateTree){
+    $('#medias .tree-filter option').removeAttr('selected');
+    $('#medias .tree-filter option[value="' + path + '"]').attr('selected', 'selected');
+    $('#medias .tree-filter').trigger('chosen:updated');
+  }
 }
 
 function openMedias(e){
@@ -226,6 +242,12 @@ $(function() {
     $(this).chosen({ width: $(this).data('width') || '' });
   });
   $('#sidebar .tree-filter').change(applyFilter);
+  $('#medias .tree-filter').change(function(event, params){
+    var path = params.selected;
+    var url = base_url + path;
+    if(path.length > 1) url = url + '/';
+    loadMedias(url, path, false);
+  });
   updateFilter();
 
 
@@ -257,7 +279,7 @@ $(function() {
       document.title += ' *';
     }
   });
-
+  $('body').data('editor', editor);
 
   // New page /////////////////////////////////////////////////////////////////
   $('.controls .new').on('click', function(e){
