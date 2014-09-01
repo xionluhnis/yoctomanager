@@ -34,7 +34,18 @@ function updateFilter() {
     var $select = $('.tree-filter');
     $select.find('option').remove();
 
+    // sort
+    var items = [];
     for(var dir in data){
+      items.push(dir);
+    }
+    items.sort(function(a, b){
+      return a.localeCompare(b);
+    });
+
+    // process
+    for(var i = 0; i < items.length; ++i){
+      var dir = items[i];
       $select.each(function(){
         var path = $(this).data('isfilter') ? (dir.length ? '/' + dir : dir) : '/' + dir;
         $(this).append('<option value="' + path + '">' + path + '</option>');
@@ -51,7 +62,7 @@ function updateFilter() {
 function mediaAction(event){
   if(event) event.preventDefault();
   // the dom elements
-  $link = $(this);
+  var $link = $(this);
   var p = $link.parent();
 
   if($link.hasClass('link')){
@@ -149,12 +160,37 @@ function openMedias(e){
 ///// Directory tree //////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 function treeAction(event){
+  var $trg = $(event.target);
+  if($trg.hasClass('delete')){
+    var path = $trg.parent().data('path');
+    if(!path || path.length == 0){
+      return;
+    }
+    // delete full subtree?
+    if(!confirm('Are you sure you want to delete the full tree?')) return false;
+    $.post('admin/tree/delete', { path: path }, function(data){
+      if(data == 'Success'){
+        reloadTree();
+      }
+    });
 
+  } else if($trg.hasClass('new')){
+    var prefix = $trg.data('prefix') || '/';
+    var newPath = prompt('Specify path name:', prefix);
+    if(newPath && newPath.charAt(0) == '/'){
+      // create new path
+      $.post(base_url + '/admin/tree/new', { path: newPath }, function(data) {
+        if(data == 'Success'){
+          reloadTree();
+        }
+      });
+    }
+
+  }
 }
-function openTree(e){
+function reloadTree(){
   var $list = $('#dirtree ul.tree');
   $list.empty();
-  $('#dirtree').fadeIn('slow');
   // get tree
   $.post(base_url + '/admin/tree/list', {}, function(data){
     var items = [];
@@ -172,6 +208,10 @@ function openTree(e){
       $res.appendTo($list);
     }
   }, 'json');
+}
+function openTree(event){
+  reloadTree();
+  $('#dirtree').fadeIn('slow');
   return false;
 }
 
@@ -303,13 +343,14 @@ $(function() {
     });
   });
 
-  // Open tree ////////////////////////////////////////////////////////////////
+  // Open tree ///////////////////////////////////////////////////////////////
   $('#sidebar .controls .tree').click(openTree);
   $('#dirtree').click(function(event){
     if($(event.target).attr('id') == 'dirtree'){
       $(this).fadeOut('slow');
     }
   });
+  $('#dirtree button.new').click(treeAction);
 
 
   // Open medias //////////////////////////////////////////////////////////////

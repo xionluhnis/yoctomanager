@@ -530,13 +530,31 @@ class Yocto_Manager {
   //
   // Create a tree path ///////////////////////////////////////////////////////
   //
+  private function check_path() {
+    $path = $_POST['path'];
+    if(strlen($path) == 0 || strpos($path, '..') !== FALSE){
+      die('Path problem');
+    }
+    return $path;
+  }
   private function do_tree_new() {
+    $this->check_login();
+    $path = $this->check_path();
+
+    // create directory in media folder
+    $media_dir = $this->setting('media_dir');
+    if(mkdir($media_dir . '/' . $path, 0771, TRUE)){
+      die('Success');
+    } else {
+      die('Could not create directory ' . $path);
+    }
   }
 
   //
   // List all tree paths //////////////////////////////////////////////////////
   //
   private function do_tree_list() {
+    $this->check_login();
     // paths from content directory
     $paths = array('');
     $iter = new RecursiveIteratorIterator(
@@ -600,7 +618,25 @@ class Yocto_Manager {
   //
   // Delete a tree path ///////////////////////////////////////////////////////
   //
+  public static function del_tree($dir) {
+    if(!is_dir($dir)) return TRUE;
+    $files = array_diff(scandir($dir), array('.','..'));
+    foreach ($files as $file) {
+      (is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file");
+    }
+    return rmdir($dir);
+  }
   private function do_tree_delete() {
+    $this->check_login();
+    $path = $this->check_path();
+    $media_dir = $this->setting('media_dir');
+
+    // try to delete in content and in medias
+    $res = TRUE;
+    $res &= self::del_tree(CONTENT_DIR . '/' . $path);
+    $res &= self::del_tree($media_dir . '/' . $path);
+
+    die($res ? 'Success' : 'Could not clean tree correctly');
   }
 
 }

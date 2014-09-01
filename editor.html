@@ -13,14 +13,18 @@
       <div class="page">
         <h2>Directory Tree</h2>
         <script id="tree-tpl" type="text/nano-template">
-          <li data-page="{path}">
-            <a href="#" class="link tree" title="Create subdirectory">/{path}</a>
+          <li data-path="{path}">
+            <a href="#" data-prefix="/{path}" class="new link tree" title="Create subdirectory">/{path}</a>
             <span class="pagecount" title="Number of pages"><span data-icon="3" aria-hidden="true" class="icon"></span> {content}</span>
             <span class="mediacount" title="Number of medias"><span data-icon="8" aria-hidden="true" class="icon"></span> {media}</span>
             <a href="#" class="delete" title="Delete subtree">4</a>
           </li>
         </script>
         <ul class="tree filelist"></ul>
+        <button class="btn new" title="Create new path">
+          <span data-icon="1" aria-hidden="true"></span>
+          Add path
+        </button>
       </div>
     </div>
     <div id="medias">
