@@ -596,9 +596,6 @@ class Pico_Editor {
 
     die(json_encode($list));
   }
-  private function get_tree_info($path) {
-
-  }
 
   //
   // Delete a tree path ///////////////////////////////////////////////////////

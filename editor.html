@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>Pico Editor</title>
     <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/pico_editor.css" type="text/css" />
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/chosen/chosen.min.css" type="text/css" />
     <meta name="robots" content="noindex, nofollow" />
   </head>
   <body>
@@ -61,10 +62,16 @@
       <a href="#" class="media btn" title="Medias">8</a>
       <a href="{{ base_url }}/admin/logout" class="logout btn" title="Logout">2</a>
     </div>
+    <select class="tree-filter" tabindex="-1" multiple="" data-placeholder="Filter pages...">
+      <option value=""></option>
+      {% for dir in directories %}
+        
+      {% endfor %}
+    </select>
     <ul class="nav">
       {% for page in pages %}
       <!--<li><a href="#" data-url="{{ page.url }}" class="post"><span data-icon="3" aria-hidden="true"></span>{% if page.title %}{{ page.title }}{% else %}Untitled{% endif %}</a>-->
-      <li><a href="#" data-url="{{ page.url }}" class="post"><span data-icon="3" aria-hidden="true"></span>{{ page.url | shorturl }}</a>
+      <li data-path="{{ page.url | shorturl }}"><a href="#" data-url="{{ page.url }}" class="post"><span data-icon="3" aria-hidden="true"></span>{{ page.url | shorturl }}</a>
       <a href="{{ page.url }}" target="_blank" class="view" title="View">5</a>
       <a href="#" data-url="{{ page.url }}" class="media" title="Media Manager">8</a>
       <a href="#" data-url="{{ page.url }}" class="delete" title="Delete">4</a></li>
@@ -81,13 +88,46 @@
     <script src="{{ base_url }}/plugins/{{ yocto_dir }}/fileupload/js/jquery.iframe-transport.js"></script>
     <script src="{{ base_url }}/plugins/{{ yocto_dir }}/fileupload/js/jquery.fileupload.js"></script>
     <script src="{{ base_url }}/plugins/{{ yocto_dir }}/nano/jquery.nano.js"></script>
-
-    <!--
-    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/jstree/jstree.min.js"></script>
-    -->
-    <script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/chosen/chosen.jquery.min.js"></script>
+    <!-- our scripts -->
+    <script type="text/javascript">
+      function applyFilter() {
+        var filters = [];
+        $('#sidebar .tree-filter option:selected').each(function(){
+          filters.push($(this).val());
+        });
+        $('#sidebar .nav li').each(function(){
+          var path = $(this).data('path');
+          var valid = true;
+          if(filters.length > 0){
+            valid = false;
+            for(var i = 0; i < filters.length; ++i){
+              if(path.indexOf(filters[i]) == 0){
+                valid = true;
+                break;
+              }
+            }
+          }
+          if(valid) $(this).show();
+          else $(this).hide();
+        });
+      }
+      function updateFilter() {
+        $.post('admin/tree/list', {}, function(data){
+          var $select = $('.tree-filter');
+          $select.find('option').remove();
+          // $select.append('<option value=""></option>');
+          for(var dir in data){
+            if(dir.length) dir = '/' + dir;
+            $select.append('<option value="' + dir + '">' + dir + '</option>');
+          }
+          $select.chosen();
+          $select.change(applyFilter);
+        }, 'json');
+      }
       $(document).ready(function() {
-
+          //$('.select-chosen').chosen();
+        updateFilter();
         var unsaved = false;
         var editor = new EpicEditor({
           container: 'epiceditor',
