@@ -18,8 +18,7 @@ php -r 'echo hash("sha128", "yourpassword");'
 
 TODO
 ----
-  * Provide data for twig templates to go over available media for a given namespace
-  * Have default media gallery template
+  * Button to reprocess images (medium + thumbnail generation) in a directory
   * Have slider to change left panel width
   * Provide meaningful examples in `config.php` especially about image versions
 
