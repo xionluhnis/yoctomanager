@@ -349,11 +349,11 @@ class Yocto_Manager {
     $error = '';
     $file .= CONTENT_EXT;
     $content = '/*
-      Title: '. $title .'
-      Author:
-      Description:
-      Date: '. date('Y/m/d') .'
-     */';
+Title: '. $title .'
+Author:
+Description:
+Date: '. date('Y/m/d') .'
+*/';
     if(file_exists($contentDir . $file)) {
       $error = 'Error: A post already exists with this title';
     } else {
@@ -426,6 +426,7 @@ class Yocto_Manager {
   //
   private function do_media_list() {
     $media_dir = $this->get_media_dir($file_url);
+    $versions = $this->get_image_versions(TRUE);
     $media_list = array();
     if(is_dir($media_dir) && $handle = opendir($media_dir)){
       while( ($entry = readdir($handle)) !== FALSE) {
@@ -436,6 +437,10 @@ class Yocto_Manager {
       natsort($media_list);
       closedir($handle);
     }
+    $self = $this;
+    $media_list = array_map(function($item) use(&$self, &$media_dir, &$versions){
+      return $self->get_image_info($media_dir . $item, $versions);
+    }, $media_list);
     die(json_encode(array(
       'list'  => $media_list,
       'dir'   => $media_dir,

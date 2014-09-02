@@ -34,9 +34,9 @@
           <option value="/">/</option>
         </select>
         <script id="img-tpl" type="text/nano-template">
-          <li data-page="{page}" data-name="{name}" data-url="{{ base_url }}/{dir}{name}">
+          <li data-page="{page}" data-name="{name}" data-url="{url}">
             <a href="#" class="link img" title="Insert link">
-              <img src="{{ base_url }}/{dir}{name}" />
+              <img src="{thumbnail}" />
               <span class="name">{name}</span>
             </a>
             <a href="#" class="view" title="View image">5</a>
@@ -45,7 +45,7 @@
           </li>
         </script>
         <script id="file-tpl" type="text/nano-template">
-          <li data-page="{page}" data-name="{name}" data-url="{{ base_url }}/{dir}{name}">
+          <li data-page="{page}" data-name="{name}" data-url="{url}">
             <a href="#" class="link file" title="Insert link">
               <span class="file">F</span>
               <span class="name">{name}</span>

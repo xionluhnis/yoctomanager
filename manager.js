@@ -139,13 +139,17 @@ function loadMedias(currentUrl, path, updateTree){
   // get file list
   $.post(base_url + '/admin/media/list', { file: currentUrl }, function(data) {
     $.each(data.list, function(index, file){
+      var url = file.url;
+      var name = file.file.replace(data.dir, '');
       var json = {
-        name: file,
+        name: name,
+        url: url,
         page: data.file,
         dir: data.dir
       };
+      if(file.is_image) json.thumbnail = file.thumbnail.url;
       var imgExt = /.+\.(png|jpe?g|gif)$/i;
-      var tmpl = imgExt.test(file) ? '#medias #img-tpl' : '#medias #file-tpl';
+      var tmpl = imgExt.test(name) ? '#medias #img-tpl' : '#medias #file-tpl';
       var $res = $(tmpl).nanotmpl(json);
       $res.find('a').click(mediaAction);
       $res.appendTo($list);
