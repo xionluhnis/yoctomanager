@@ -18,9 +18,24 @@ php -r 'echo hash("sha128", "yourpassword");'
 
 TODO
 ----
+  * Provide link (with page parameter) to
+    * Edit a page (popup window?)
+    * Create a new page (and edit it), especially useful in the 404 page
+  * Have smart editor that does indenting and delete right
   * Button to reprocess images (medium + thumbnail generation) in a directory
   * Have slider to change left panel width
   * Provide meaningful examples in `config.php` especially about image versions
+
+TODO Design
+-----------
+In-place editing is probably not a good idea as we may want to use EpicEditor.
+Then we may want to extract the new components:
+  * Media manager
+  * File manager
+
+So that we can have the new popup page editor that also provides access to the medias and files.
+This means using twig templates and including them where they need to be reused.
+The javascript code may need refactoring.
 
 License
 -------
