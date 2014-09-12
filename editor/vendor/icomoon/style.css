@@ -1,33 +1,15 @@
 @font-face {
 	font-family: 'icomoon';
-	src:url('fonts/icomoon.eot');
-	src:url('fonts/icomoon.eot?#iefix') format('embedded-opentype'),
-		url('fonts/icomoon.woff') format('woff'),
-		url('fonts/icomoon.ttf') format('truetype'),
-		url('fonts/icomoon.svg#icomoon') format('svg');
+	src:url('fonts/icomoon.eot?-kqvkot');
+	src:url('fonts/icomoon.eot?#iefix-kqvkot') format('embedded-opentype'),
+		url('fonts/icomoon.woff?-kqvkot') format('woff'),
+		url('fonts/icomoon.ttf?-kqvkot') format('truetype'),
+		url('fonts/icomoon.svg?-kqvkot#icomoon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
 
-/* Use the following CSS code if you want to use data attributes for inserting your icons */
-[data-icon]:before {
-	font-family: 'icomoon';
-	content: attr(data-icon);
-	speak: none;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1;
-	-webkit-font-smoothing: antialiased;
-}
-
-/* Use the following CSS code if you want to have a class per icon */
-/*
-Instead of a list of all class selectors,
-you can use the generic selector below, but it's slower:
-[class*="icon-"] {
-*/
-.icon-bold, .icon-italic, .icon-quote, .icon-unordered-list, .icon-ordered-list, .icon-link, .icon-image, .icon-play, .icon-music, .icon-contract, .icon-fullscreen, .icon-question, .icon-info, .icon-undo, .icon-redo, .icon-code, .icon-preview {
+[class^="icon-"], [class*=" icon-"] {
 	font-family: 'icomoon';
 	speak: none;
 	font-style: normal;
@@ -35,21 +17,25 @@ you can use the generic selector below, but it's slower:
 	font-variant: normal;
 	text-transform: none;
 	line-height: 1;
+
+	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
+
 .icon-bold:before {
 	content: "\e000";
 }
 .icon-italic:before {
 	content: "\e001";
 }
-.icon-quote:before {
+.icon-quotes-left:before {
 	content: "\e003";
 }
-.icon-unordered-list:before {
+.icon-list:before {
 	content: "\e004";
 }
-.icon-ordered-list:before {
+.icon-numbered-list:before {
 	content: "\e005";
 }
 .icon-link:before {
@@ -67,7 +53,7 @@ you can use the generic selector below, but it's slower:
 .icon-contract:before {
 	content: "\e00a";
 }
-.icon-fullscreen:before {
+.icon-expand:before {
 	content: "\e00b";
 }
 .icon-question:before {
@@ -85,6 +71,24 @@ you can use the generic selector below, but it's slower:
 .icon-code:before {
 	content: "\e011";
 }
-.icon-preview:before {
+.icon-eye:before {
 	content: "\e002";
+}
+.icon-images:before {
+	content: "\49";
+}
+.icon-save:before {
+	content: "\73";
+}
+.icon-delete:before {
+	content: "\64";
+}
+.icon-tree:before {
+	content: "\74";
+}
+.icon-minus:before {
+	content: "\2d";
+}
+.icon-plus:before {
+	content: "\2b";
 }
