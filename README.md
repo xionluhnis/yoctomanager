@@ -21,7 +21,7 @@ TODO
   * Provide link (with page parameter) to
     * Edit a page (popup window?)
     * Create a new page (and edit it), especially useful in the 404 page
-  * Have smart editor that does indenting and delete right
+  * Switch from EpicEditor to Lepture's editor based on CodeMirror
   * Button to reprocess images (medium + thumbnail generation) in a directory
   * Have slider to change left panel width
   * Provide meaningful examples in `config.php` especially about image versions
