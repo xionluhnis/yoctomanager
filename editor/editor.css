@@ -1,5 +1,6 @@
 .CodeMirror {
-  height: 450px;
+  height: auto;
+  min-height: 450px;
 }
 :-webkit-full-screen {
   background: #f9f9f5;
