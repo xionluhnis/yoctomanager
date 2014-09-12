@@ -14,6 +14,9 @@ var toolbar = [
 
   {name: 'info', action: 'http://lab.lepture.com/editor/markdown'},
   {name: 'preview', action: togglePreview},
+  {name: 'save', shortcut: 'Ctrl-S', action: save},
+  '|',
+  {name: 'delete', action: deleteFile},
   {name: 'fullscreen', action: toggleFullScreen}
 ];
 

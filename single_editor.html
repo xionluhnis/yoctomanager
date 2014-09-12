@@ -11,7 +11,7 @@
     <meta name="robots" content="noindex, nofollow" />
   </head>
   <body>
-    <div id="saving">Saving...</div>
+    <div id="saving"><span class="text">Saving...</span></div>
     <div id="error">{{ error }}</div>
     <div class="editorwrap">
       <span class="title">{{ path }}</span>
@@ -21,8 +21,10 @@
     <script type="text/javascript">
       var base_url = '{{ base_url }}';
       var yocto_dir = '{{ yocto_dir }}';
+      var current_file = '{{ path }}';
     </script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/marked.min.js"></script>
     <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/codemirror.js"></script>
     <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/continuelist.js"></script>
     <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/markdown.js"></script>

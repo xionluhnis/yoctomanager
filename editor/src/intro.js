@@ -353,3 +353,28 @@ function wordCount(data) {
   }
   return count;
 }
+
+function save(editor){
+  $('#saving').addClass('active').find('.text').text('Saving...');
+  var content = editor.codemirror.getValue();
+  $.post(base_url + '/admin/save', { file: current_file, content: content }, function(data){
+    $('#saving .text').text('Saved');
+    document.title = document.title.replace(' *', '');
+    setTimeout(function(){
+      $('#saving').removeClass('active');
+    }, 1000);
+  });
+}
+
+function deleteFile(editor){
+  var ok = confirm('Do you really want to delete this page?');
+  if(!ok) return;
+  $('#saving').addClass('active').find('.text').text('Deleting...');
+  $.post(base_url + '/admin/delete', { file: current_file }, function(data){
+    $('#saving .text').text('Deleted');
+    document.title = document.title.replace(' *', '');
+    setTimeout(function(){
+      $('#saving').removeClass('active');
+    }, 1000);
+  });
+}

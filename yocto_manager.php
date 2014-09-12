@@ -16,7 +16,7 @@ class Yocto_Manager {
   private $plugin_path;
   private $settings;
   private $base_url;
-  private $admin_vars;
+  private $state_vars;
   private $admin_page;
 
   public function __construct() {
@@ -24,7 +24,7 @@ class Yocto_Manager {
     $this->is_logout = false;
     $this->plugin_path = dirname(__FILE__);
     $this->settings = array();
-    $this->admin_vars = array();
+    $this->state_vars = array();
     $this->admin_page = FALSE;
     session_start();
 
@@ -84,9 +84,10 @@ class Yocto_Manager {
    * @param $url string the current url to respond for
    */
   public function request_url(&$url) {
+    $this->state_vars['current_url'] = $this->base_url . '/' . $url;
     // Are we looking for /admin?
     if(self::startsWith($url, 'admin')){
-      $this->is_admin = true;
+      $this->is_admin = TRUE;
 
       // is it a command?
       if(substr_compare($url, '/', 5, 1) === 0){
@@ -118,6 +119,15 @@ class Yocto_Manager {
   }
 
   /**
+   * Hook: before loading the 404 content (path doesn't exist!)
+   *
+   * @param $file string the requested file which is missing
+   */
+  public function before_404_load_content(&$file) {
+    $this->state_vars['is_404'] = TRUE;
+  }
+
+  /**
    * Hook: before rendering with Twig
    *
    * @param $twig_vars array twig environment variables
@@ -132,12 +142,17 @@ class Yocto_Manager {
 
     // special variables
     $twig_vars['yocto_dir'] = basename($this->plugin_path);
+    $twig_vars = array_merge($twig_vars, $this->state_vars);
 
     // page filter
     $base_url = $twig_vars['base_url'];
     $shorturl = new Twig_SimpleFilter('shorturl', function ($string) use($base_url) {
       return str_replace($base_url, '', $string);
     });
+
+    // login check
+    $is_logged = isset($_SESSION['pico_logged_in']) && $_SESSION['pico_logged_in'];
+    $twig_vars['is_logged'] = TRUE;
 
     // admin case
     if($this->is_admin){
@@ -151,7 +166,7 @@ class Yocto_Manager {
         exit;
       }
 
-      if(!isset($_SESSION['pico_logged_in']) || !$_SESSION['pico_logged_in']){
+      if(!$is_logged){
         if(isset($_POST['password'])){
           if(hash($this->setting('hash', 'sha1'), $_POST['password']) == $this->setting('password')){
             $_SESSION['pico_logged_in'] = true;
@@ -166,9 +181,6 @@ class Yocto_Manager {
           exit;
         }
       }
-
-      // merge admin variables
-      $twig_vars = array_merge($twig_vars, $this->admin_vars); // merge twig variables
 
       // get page template
       $page = $this->admin_page;
@@ -445,11 +457,11 @@ Date: '. date('Y/m/d') .'
     $path = '';
     if(isset($_POST['path'])) $path = $_POST['path'];
     else if(isset($_GET['path'])) $path = $_GET['path'];
-    $this->admin_vars['path'] = $path;
+    $this->state_vars['path'] = $path;
     $this->admin_page = 'single_editor.html';
 
     if(!$this->check_path($path)){
-      $this->admin_vars['error'] = 'Invalid path parameter.';
+      $this->state_vars['error'] = 'Invalid path parameter.';
       return;
     }
 
@@ -459,7 +471,7 @@ Date: '. date('Y/m/d') .'
     $contentDir = CONTENT_DIR . $dir;
     if(!is_dir($contentDir)) {
       if (!mkdir($contentDir, 0777, true)) {
-        $this->admin_vars['error'] = 'Cannot create directory...';
+        $this->state_vars['error'] = 'Cannot create directory...';
         return;
       }
     }
@@ -469,7 +481,7 @@ Date: '. date('Y/m/d') .'
     $file .= CONTENT_EXT;
 
     if(file_exists(CONTENT_DIR . $file)){
-      $this->admin_vars['error'] = 'File exists already!';
+      $this->state_vars['error'] = 'File exists already!';
       return;
     }
 
@@ -481,9 +493,9 @@ Date: '. date('Y/m/d') .'
 */';
     // create empty post
     if(strlen($content) !== file_put_contents(CONTENT_DIR . $file, $content)){
-      $this->admin_vars['error'] = 'Cannot create file...';
+      $this->state_vars['error'] = 'Cannot create file...';
     } else {
-      $this->admin_vars['content'] = $content;
+      $this->state_vars['content'] = $content;
     }
   }
   private function check_path($path) {
@@ -501,20 +513,20 @@ Date: '. date('Y/m/d') .'
     if(isset($_POST['path'])) $path = $_POST['path'];
     else if(isset($_GET['path'])) $path = $_GET['path'];
 
-    $this->admin_vars['path'] = $path;
+    $this->state_vars['path'] = $path;
     $this->admin_page = 'single_editor.html';
 
     if(!$this->check_path($path)){
-      $this->admin_vars['error'] = 'Invalid path parameter.';
+      $this->state_vars['error'] = 'Invalid path parameter.';
       return;
     }
 
     $file = self::get_real_filename($path, $this->base_url);
     $file .= CONTENT_EXT;
     if(file_exists(CONTENT_DIR . $file)) {
-      $this->admin_vars['content'] = file_get_contents(CONTENT_DIR . $file);
+      $this->state_vars['content'] = file_get_contents(CONTENT_DIR . $file);
     } else {
-      $this->admin_vars['error'] = 'Could not read file...';
+      $this->state_vars['error'] = 'Could not read file...';
     }
   }
 
