@@ -34,7 +34,7 @@ function applyFilter() {
   });
 }
 function updateFilter() {
-  $.post('admin/tree/list', {}, function(data){
+  $.post(base_url + '/admin/tree/list', {}, function(data){
     var $select = $('.tree-filter');
     $select.find('option').remove();
 
@@ -90,7 +90,7 @@ function mediaAction(event){
     var nameCheck = /[a-zA-Z0-9-_. ()]+/i;
     if(nameCheck.test(newName) && newName.length > 3){
       var oldName = p.data('name');
-      $.post('admin/media/rename', {
+      $.post(base_url + '/admin/media/rename', {
         file: p.data('page'),
         oldName: oldName,
         newName: newName
@@ -107,7 +107,7 @@ function mediaAction(event){
   } else if($link.hasClass('delete')){
     // delete file
     if(!confirm('Are you sure you want to delete this file?')) return false;
-    $.post('admin/media/delete', {
+    $.post(base_url + '/admin/media/delete', {
       file: p.data('page'),
       name: p.data('name')
     }, function(data){
@@ -191,7 +191,7 @@ function treeAction(event){
     }
     // delete full subtree?
     if(!confirm('Are you sure you want to delete the full tree?')) return false;
-    $.post('admin/tree/delete', { path: path }, function(data){
+    $.post(base_url + '/admin/tree/delete', { path: path }, function(data){
       if(data == 'Success'){
         reloadTree();
       }
@@ -302,7 +302,7 @@ $(function() {
     var title = linkName.substring(splitIndex + 1);
 
     if(title != null && title != '' && dir != null && dir != ''){
-      $.post('admin/new', { title: title, dir: dir }, function(data){
+      $.post(base_url + '/admin/new', { title: title, dir: dir }, function(data){
         if(data.error){
           alert(data.error);
         } else {
@@ -326,7 +326,7 @@ $(function() {
     $(this).parent().addClass('open');
 
     var fileUrl = $(this).attr('data-url');
-    $.post('admin/open', { file: fileUrl }, function(data){
+    $.post(base_url + '/admin/open', { file: fileUrl }, function(data){
       $('#epiceditor').data('currentFile', fileUrl);
       editor.importFile('epiceditor', data);
       unsaved = false;
@@ -338,7 +338,7 @@ $(function() {
   // Save page ////////////////////////////////////////////////////////////////
   editor.on('autosave', function () {
     $('#saving').text('Saving...').addClass('active');
-    $.post('admin/save', { file: $('#epiceditor').data('currentFile'), content: editor.exportFile() }, function(data){
+    $.post(base_url + '/admin/save', { file: $('#epiceditor').data('currentFile'), content: editor.exportFile() }, function(data){
       $('#saving').text('Saved');
       unsaved = false;
       document.title = document.title.replace(' *', '');
@@ -362,7 +362,7 @@ $(function() {
 
     var li = $(this).parents('li');
     var fileUrl = $(this).attr('data-url');
-    $.post('admin/delete', { file: fileUrl }, function(data){
+    $.post(base_url + '/admin/delete', { file: fileUrl }, function(data){
       li.remove();
       $('#epiceditor').data('currentFile', '');
       editor.importFile('epiceditor', '');
