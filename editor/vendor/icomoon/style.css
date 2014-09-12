@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'icomoon';
-	src:url('fonts/icomoon.eot?-kqvkot');
-	src:url('fonts/icomoon.eot?#iefix-kqvkot') format('embedded-opentype'),
-		url('fonts/icomoon.woff?-kqvkot') format('woff'),
-		url('fonts/icomoon.ttf?-kqvkot') format('truetype'),
-		url('fonts/icomoon.svg?-kqvkot#icomoon') format('svg');
+	src:url('fonts/icomoon.eot?-3ofj0q');
+	src:url('fonts/icomoon.eot?#iefix-3ofj0q') format('embedded-opentype'),
+		url('fonts/icomoon.woff?-3ofj0q') format('woff'),
+		url('fonts/icomoon.ttf?-3ofj0q') format('truetype'),
+		url('fonts/icomoon.svg?-3ofj0q#icomoon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -29,13 +29,13 @@
 .icon-italic:before {
 	content: "\e001";
 }
-.icon-quotes-left:before {
+.icon-quote:before {
 	content: "\e003";
 }
-.icon-list:before {
+.icon-unordered-list:before {
 	content: "\e004";
 }
-.icon-numbered-list:before {
+.icon-ordered-list:before {
 	content: "\e005";
 }
 .icon-link:before {
@@ -53,7 +53,7 @@
 .icon-contract:before {
 	content: "\e00a";
 }
-.icon-expand:before {
+.icon-fullscreen:before {
 	content: "\e00b";
 }
 .icon-question:before {
@@ -71,7 +71,7 @@
 .icon-code:before {
 	content: "\e011";
 }
-.icon-eye:before {
+.icon-preview:before {
 	content: "\e002";
 }
 .icon-images:before {
