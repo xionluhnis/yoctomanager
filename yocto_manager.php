@@ -16,12 +16,16 @@ class Yocto_Manager {
   private $plugin_path;
   private $settings;
   private $base_url;
+  private $admin_vars;
+  private $admin_page;
 
   public function __construct() {
     $this->is_admin = false;
     $this->is_logout = false;
     $this->plugin_path = dirname(__FILE__);
     $this->settings = array();
+    $this->admin_vars = array();
+    $this->admin_page = FALSE;
     session_start();
 
     // include configuration
@@ -94,6 +98,9 @@ class Yocto_Manager {
         case 'save':    $this->do_save(); break;
         case 'delete':  $this->do_delete(); break;
         case 'logout':  $this->is_logout = true; break;
+        // single editor
+        case 'create':  $this->show_create(); break;
+        case 'edit':    $this->show_edit(); break;
         // tree editor
         case 'tree/new':    $this->do_tree_new(); break;
         case 'tree/list':   $this->do_tree_list(); break;
@@ -160,8 +167,17 @@ class Yocto_Manager {
         }
       }
 
-      echo $twig_editor->render('editor.html', $twig_vars); // Render editor.html
+      // merge admin variables
+      $twig_vars = array_merge($twig_vars, $this->admin_vars); // merge twig variables
+
+      // get page template
+      $page = $this->admin_page;
+      if($page === FALSE) $page = 'editor.html';
+
+      // render it
+      echo $twig_editor->render($page, $twig_vars);
       exit; // Don't continue to render template
+
     } else {
       $twig->addFilter($shorturl);
       // template rendering
@@ -422,6 +438,87 @@ Date: '. date('Y/m/d') .'
   }
 
   //
+  // Single editor page create ////////////////////////////////////////////////
+  //
+  private function show_create() {
+    $this->check_login();
+    $path = '';
+    if(isset($_POST['path'])) $path = $_POST['path'];
+    else if(isset($_GET['path'])) $path = $_GET['path'];
+    $this->admin_vars['path'] = $path;
+    $this->admin_page = 'single_editor.html';
+
+    if(!$this->check_path($path)){
+      $this->admin_vars['error'] = 'Invalid path parameter.';
+      return;
+    }
+
+    $file = self::get_real_filename($path, $this->base_url);
+
+    $dir = substr($file, 0, strrpos($file, '/'));
+    $contentDir = CONTENT_DIR . $dir;
+    if(!is_dir($contentDir)) {
+      if (!mkdir($contentDir, 0777, true)) {
+        $this->admin_vars['error'] = 'Cannot create directory...';
+        return;
+      }
+    }
+
+    $title = basename($file);
+    if(empty($title)) $title = 'Index';
+    $file .= CONTENT_EXT;
+
+    if(file_exists(CONTENT_DIR . $file)){
+      $this->admin_vars['error'] = 'File exists already!';
+      return;
+    }
+
+    $content = '/*
+Title: '. $title .'
+Author:
+Description:
+Date: '. date('Y/m/d') .'
+*/';
+    // create empty post
+    if(strlen($content) !== file_put_contents(CONTENT_DIR . $file, $content)){
+      $this->admin_vars['error'] = 'Cannot create file...';
+    } else {
+      $this->admin_vars['content'] = $content;
+    }
+  }
+  private function check_path($path) {
+    if(empty($path)) return FALSE;
+    if(strpos($path, '..') !== FALSE) return false;
+    return TRUE;
+  }
+
+  //
+  // Single editor page ///////////////////////////////////////////////////////
+  //
+  private function show_edit()  {
+    $this->check_login();
+    $path = '';
+    if(isset($_POST['path'])) $path = $_POST['path'];
+    else if(isset($_GET['path'])) $path = $_GET['path'];
+
+    $this->admin_vars['path'] = $path;
+    $this->admin_page = 'single_editor.html';
+
+    if(!$this->check_path($path)){
+      $this->admin_vars['error'] = 'Invalid path parameter.';
+      return;
+    }
+
+    $file = self::get_real_filename($path, $this->base_url);
+    $file .= CONTENT_EXT;
+    if(file_exists(CONTENT_DIR . $file)) {
+      $this->admin_vars['content'] = file_get_contents(CONTENT_DIR . $file);
+    } else {
+      $this->admin_vars['error'] = 'Could not read file...';
+    }
+  }
+
+  //
   // Retrieve the list of media file //////////////////////////////////////////
   //
   private function do_media_list() {
@@ -535,7 +632,7 @@ Date: '. date('Y/m/d') .'
   //
   // Create a tree path ///////////////////////////////////////////////////////
   //
-  private function check_path() {
+  private function checked_path() {
     $path = $_POST['path'];
     if(strlen($path) == 0 || strpos($path, '..') !== FALSE){
       die('Path problem');
@@ -544,7 +641,7 @@ Date: '. date('Y/m/d') .'
   }
   private function do_tree_new() {
     $this->check_login();
-    $path = $this->check_path();
+    $path = $this->checked_path();
 
     // create directory in media folder
     $media_dir = $this->setting('media_dir');
@@ -633,7 +730,7 @@ Date: '. date('Y/m/d') .'
   }
   private function do_tree_delete() {
     $this->check_login();
-    $path = $this->check_path();
+    $path = $this->checked_path();
     $media_dir = $this->setting('media_dir');
 
     // try to delete in content and in medias

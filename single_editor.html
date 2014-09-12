@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <title>Page Editor</title>
+    <!-- <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/style.css" type="text/css" /> -->
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/single_style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/editor/paper.css" type="text/css" />
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/editor/editor.css" type="text/css" />
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/icomoon/style.css" type="text/css" />
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body>
+    <div id="saving">Saving...</div>
+    <div id="error">{{ error }}</div>
+    <div class="editorwrap">
+      <span class="title">{{ path }}</span>
+      <textarea>{{ content }}</textarea>
+    </div>
+
+    <script type="text/javascript">
+      var base_url = '{{ base_url }}';
+      var yocto_dir = '{{ yocto_dir }}';
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/codemirror.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/continuelist.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/markdown.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/xml.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/src/intro.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/src/editor.js"></script>
+    <script type="text/javascript">
+      $(function() {
+        var editor = new Editor();
+        editor.render();
+      });
+    </script>
+
+  </body>
+</html>
