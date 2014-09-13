@@ -13,24 +13,36 @@
     <div id="saving"><span class="text">Saving...</span></div>
     <div id="error">{{ error }}</div>
     <div class="editorwrap">
-      <span class="title">{{ path }}</span>
+      <select class="tree-filter" data-width="50%">
+      {% for page in pages %}
+        <option value="{{ page.url }}">{{ page.url | shorturl }}</option>
+      {% endfor %}
+      </select>
       <textarea>{{ content }}</textarea>
     </div>
 {% endblock %}
 
 {% block scripts %}
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/marked.min.js"></script>
-    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/codemirror.js"></script>
-    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/continuelist.js"></script>
-    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/markdown.js"></script>
-    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/xml.js"></script>
-    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/src/intro.js"></script>
-    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/src/editor.js"></script>
-    <script type="text/javascript">
-      $(function() {
-        var editor = new Editor();
-        editor.render();
-      });
-    </script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/chosen/chosen.jquery.min.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/marked.min.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/codemirror.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/continuelist.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/markdown.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/xml.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/src/intro.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/src/editor.js"></script>
+<script type="text/javascript">
+$(function() {
+  var editor = new Editor();
+  editor.render();
+
+  // file selector
+  $('.tree-filter').each(function(){
+    $(this).chosen({ width: $(this).data('width') || '' });
+  }).change(function(){
+      
+  });
+});
+</script>
 {% endblock %}
