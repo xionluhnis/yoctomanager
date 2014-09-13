@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <title>Yocto Manager</title>
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/beta_style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/chosen/chosen.min.css" type="text/css" />
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body>
+    <ul id="tabs">
+      <li class="tab current"><a href=""><span data-icon="3" aria-hidden="true" class="icon"></span> Pages</a></li>
+      <li class="tab"><a href=""><span data-icon="8" aria-hidden="true" class="icon"></span> Medias</a></li>
+      <li class="tab"><a href=""><span data-icon="G" aria-hidden="true" class="icon"></span> Namespaces</a></li>
+      <li class="tab"><a href="{{ base_url }}/admin/logout" title="Logout"><span data-icon="2" aria-hidden="true" class="icon"></span> Logout</a></li>
+    </ul>
+    <div id="saving">Saving...</div>
+  <!--
+  <div id="sidebar">
+    <div class="controls">
+      <a href="#" class="new btn" title="New">1</a>
+      <a href="#" class="tree btn" title="Tree">G</a>
+      <a href="#" class="media btn" title="Medias">8</a>
+      <a href="{{ base_url }}/admin/logout" class="logout btn" title="Logout">2</a>
+    </div>
+    <select class="tree-filter" tabindex="-1" multiple="" data-placeholder="Filter pages..." data-isfilter="true" data-width="100%">
+      <option value=""></option>
+    </select>
+    <ul class="nav">
+      {% for page in pages %}
+      <li><a href="#" data-url="{{ page.url }}" class="post"><span data-icon="3" aria-hidden="true"></span>{% if page.title %}{{ page.title }}{% else %}Untitled{% endif %}</a>
+      <li data-path="{{ page.url | shorturl }}"><a href="#" data-url="{{ page.url }}" class="post"><span data-icon="3" aria-hidden="true"></span>{{ page.url | shorturl }}</a>
+      <a href="{{ page.url }}" target="_blank" class="view" title="View">5</a>
+      <a href="#" data-url="{{ page.url }}" class="media" title="Media Manager">8</a>
+      <a href="#" data-url="{{ page.url }}" class="delete" title="Delete">4</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+  -->
+  <div id="main">
+    <!-- div id="epiceditor"></div> -->
+
+    <script type="text/javascript">
+      var base_url = '{{ base_url }}';
+      var yocto_dir = '{{ yocto_dir }}';
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/fileupload/js/vendor/jquery.ui.widget.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/fileupload/js/jquery.iframe-transport.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/fileupload/js/jquery.fileupload.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/nano/jquery.nano.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/chosen/chosen.jquery.min.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/manager.js"></script>
+  </div>
+
+</body>
+</html>

@@ -93,6 +93,9 @@ class Yocto_Manager {
       if(substr_compare($url, '/', 5, 1) === 0){
         $cmd = substr($url, 6);
         switch($cmd){
+        case 'beta':    $this->admin_page = 'editor_page.html';   $this->state_vars['tab'] = 'page'; break;
+        case 'medias':  $this->admin_page = 'editor_medias.html'; $this->state_vars['tab'] = 'medias'; break;
+        case 'tree':    $this->admin_page = 'editor_tree.html';   $this->state_vars['tab'] = 'tree'; break;
           // basic editor
         case 'new':     $this->do_new(); break;
         case 'open':    $this->do_open(); break;

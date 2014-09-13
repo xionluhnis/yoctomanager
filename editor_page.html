@@ -1,0 +1,36 @@
+{% extends "editor_base.html" %}
+
+{% block head %}
+{{ parent() }}
+    <!-- <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/style.css" type="text/css" /> -->
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/single_style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/editor/paper.css" type="text/css" />
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/editor/editor.css" type="text/css" />
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/icomoon/style.css" type="text/css" />
+{% endblock %}
+
+{% block content %}
+    <div id="saving"><span class="text">Saving...</span></div>
+    <div id="error">{{ error }}</div>
+    <div class="editorwrap">
+      <span class="title">{{ path }}</span>
+      <textarea>{{ content }}</textarea>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/marked.min.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/codemirror.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/continuelist.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/markdown.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/vendor/xml.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/src/intro.js"></script>
+    <script src="{{ base_url }}/plugins/{{ yocto_dir }}/editor/src/editor.js"></script>
+    <script type="text/javascript">
+      $(function() {
+        var editor = new Editor();
+        editor.render();
+      });
+    </script>
+{% endblock %}

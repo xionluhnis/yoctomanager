@@ -1,0 +1,91 @@
+{% extends "editor_base.html" %}
+
+{% block content %}
+<div id="dirtree">
+  <div class="page">
+    <h2>Directory Tree</h2>
+    <script id="tree-tpl" type="text/nano-template">
+      <li data-path="{path}">
+      <a href="#" data-prefix="/{path}" class="new link tree" title="Create subdirectory">/{path}</a>
+      <span class="pagecount" title="Number of pages"><span data-icon="3" aria-hidden="true" class="icon"></span> {content}</span>
+      <span class="mediacount" title="Number of medias"><span data-icon="8" aria-hidden="true" class="icon"></span> {media}</span>
+      <a href="#" class="delete" title="Delete subtree">4</a>
+      </li>
+    </script>
+    <ul class="tree filelist"></ul>
+    <button class="btn new" title="Create new path">
+      <span data-icon="1" aria-hidden="true"></span>
+      Add path
+    </button>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/fileupload/js/vendor/jquery.ui.widget.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/fileupload/js/jquery.iframe-transport.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/fileupload/js/jquery.fileupload.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/nano/jquery.nano.js"></script>
+<script src="{{ base_url }}/plugins/{{ yocto_dir }}/chosen/chosen.jquery.min.js"></script>
+<script type="text/javascript">
+function treeAction(event){
+  var $trg = $(event.target);
+  if($trg.hasClass('delete')){
+    var path = $trg.parent().data('path');
+    if(!path || path.length == 0){
+      return;
+    }
+    // delete full subtree?
+    if(!confirm('Are you sure you want to delete the full tree?')) return false;
+    $.post(base_url + '/admin/tree/delete', { path: path }, function(data){
+      if(data == 'Success'){
+        reloadTree();
+      }
+    });
+
+  } else if($trg.hasClass('new')){
+    var prefix = $trg.data('prefix') || '/';
+    var newPath = prompt('Specify path name:', prefix);
+    if(newPath && newPath.charAt(0) == '/'){
+      // create new path
+      $.post(base_url + '/admin/tree/new', { path: newPath }, function(data) {
+        if(data == 'Success'){
+          reloadTree();
+        }
+      });
+    }
+
+  }
+}
+function reloadTree(){
+  var $list = $('#dirtree ul.tree');
+  $list.empty();
+  // get tree
+  $.post(base_url + '/admin/tree/list', {}, function(data){
+    var items = [];
+    for(var path in data){
+      var json = data[path];
+      json.path = path;
+      items.push(json);
+    }
+    items.sort(function(a, b){
+      return a.path.localeCompare(b.path);
+    });
+    for(var i = 0; i < items.length; ++i){
+      var $res = $('#dirtree #tree-tpl').nanotmpl(items[i]);
+      $res.find('a').click(treeAction);
+      $res.appendTo($list);
+    }
+  }, 'json');
+}
+$(function(){
+  // load content
+  reloadTree();
+  // click actions
+  $('#dirtree button.new').click(treeAction);
+
+
+});
+</script>
+{% endblock %}

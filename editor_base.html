@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    {% block head %}
+    <meta charset="utf-8" />
+    <title>{% block title %}Yocto Manager{% endblock %}</title>
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/beta_style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ base_url }}/plugins/{{ yocto_dir }}/chosen/chosen.min.css" type="text/css" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="author" content="Alexandre Kaspar" />
+    {% endblock %}
+  </head>
+  <body class="{{ tab }}">
+    <ul id="tabs">
+      <li class="tab page"><a href="{{ base_url }}/admin/beta"><span data-icon="3" aria-hidden="true" class="icon"></span> Pages</a></li>
+      <li class="tab medias"><a href="{{ base_url }}/admin/medias"><span data-icon="8" aria-hidden="true" class="icon"></span> Medias</a></li>
+      <li class="tab tree"><a href="{{ base_url }}/admin/tree"><span data-icon="G" aria-hidden="true" class="icon"></span> Namespaces</a></li>
+      <li class="tab logout"><a href="{{ base_url }}/admin/logout" title="Logout"><span data-icon="2" aria-hidden="true" class="icon"></span> Logout</a></li>
+    </ul>
+    {% block content %}{% endblock %}
+    <script type="text/javascript">
+      var base_url = '{{ base_url }}';
+      var yocto_dir = '{{ yocto_dir }}';
+      var current_file = '{{ path }}';
+    </script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
