@@ -18,12 +18,10 @@ php -r 'echo hash("sha128", "yourpassword");'
 
 TODO
 ----
-  * Provide link (with page parameter) to
-    * Edit a page (popup window?)
-    * Create a new page (and edit it), especially useful in the 404 page
   * Switch from EpicEditor to Lepture's editor based on CodeMirror
+  * Debug the editor_XXX.html pages (page, medias and tree): especially the bug with selecting media directory
+  * Have meta images (medium/thumbnail versions into a different directory to remove ambiguities in directory tree (or use .medium/.thumbnail/.version)
   * Button to reprocess images (medium + thumbnail generation) in a directory
-  * Have slider to change left panel width
   * Provide meaningful examples in `config.php` especially about image versions
 
 TODO Design
